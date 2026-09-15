@@ -1,0 +1,6 @@
+{
+  "name": "Chrono-Aksara: Protokol Teks Prosedur",
+  "description": "Game edukasi interaktif petualangan fiksi ilmiah Nusantara untuk penguasaan Teks Prosedur Bahasa Indonesia (Taksonomi Bloom C1-C6).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
