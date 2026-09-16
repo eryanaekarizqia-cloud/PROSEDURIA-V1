@@ -16,9 +16,12 @@ import {
   Sparkles,
   Cpu,
   ArrowRight,
+  Zap,
+  BookOpen,
 } from 'lucide-react';
 import { MissionGuideBox } from '../ui/MissionGuideBox';
 import { StoryboardProgressHUD } from '../ui/StoryboardProgressHUD';
+import { MagicalProcedureEngine } from '../repair/MagicalProcedureEngine';
 
 interface RepairWorkshopStageProps {
   onNext: () => void;
@@ -127,6 +130,7 @@ export const RepairWorkshopStage: React.FC<RepairWorkshopStageProps> = ({
   onNext,
   onBack,
 }) => {
+  const [viewMode, setViewMode] = useState<'MAGICAL_ENGINE' | 'SYNTAX_MODULES'>('MAGICAL_ENGINE');
   const [currentTaskIdx, setCurrentTaskIdx] = useState<number>(0);
   const [solvedTasks, setSolvedTasks] = useState<{ [taskId: number]: string }>({});
   const [activeFeedback, setActiveFeedback] = useState<string | null>(null);
@@ -152,6 +156,46 @@ export const RepairWorkshopStage: React.FC<RepairWorkshopStageProps> = ({
   const progressPercent = Math.round((Object.keys(solvedTasks).length / REPAIR_TASKS.length) * 100);
   const isAllRepaired = Object.keys(solvedTasks).length === REPAIR_TASKS.length;
 
+  if (viewMode === 'MAGICAL_ENGINE') {
+    return (
+      <div className="relative w-full h-full flex flex-col justify-between pt-14 pb-4">
+        {/* Mode Switcher Banner */}
+        <div className="relative z-20 px-4 sm:px-8 py-2 flex items-center justify-between gap-3 bg-[#060E1A]/90 border-b border-[#D4AF37]/30 backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+              Mode Aktif: Mesin Magis Proseduria & Respon Dunia
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                soundFX.playChime('click');
+                setViewMode('SYNTAX_MODULES');
+              }}
+              className="px-3 py-1.5 rounded-xl bg-[#0F2847] hover:bg-[#1B4372] border border-cyan-400/40 text-cyan-200 text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5"
+              title="Buka Lembar Rekonstruksi Sintaksis Teks"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Buka Modul Sintaksis (4 Kaidah)</span>
+            </button>
+          </div>
+        </div>
+
+        {/* The Magical Engine */}
+        <div className="flex-1 w-full overflow-hidden">
+          <MagicalProcedureEngine
+            onBack={onBack}
+            onContinue={onNext}
+            stageTitle="Bengkel Mesin Magis Proseduria"
+            missionNumber="TAHAP 8 // MEKANIK REPAIR & RESPON DUNIA"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full h-full pt-16 pb-6 px-4 sm:px-8 flex flex-col justify-between overflow-y-auto">
       <div className="absolute inset-0 bg-[#08131F] opacity-95 z-0" />
@@ -162,12 +206,12 @@ export const RepairWorkshopStage: React.FC<RepairWorkshopStageProps> = ({
           <button
             onClick={() => {
               soundFX.playChime('click');
-              onBack();
+              setViewMode('MAGICAL_ENGINE');
             }}
             className="p-2 rounded-xl bg-[#0D2B45]/80 hover:bg-[#0D2B45] text-slate-300 hover:text-white border border-white/10 transition-colors flex items-center gap-1.5 text-xs font-mono cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Tahap 7</span>
+            <Zap className="w-4 h-4 text-[#00F2FE]" />
+            <span>Kembali ke Mesin Magis</span>
           </button>
           <div>
             <div className="flex items-center gap-2">

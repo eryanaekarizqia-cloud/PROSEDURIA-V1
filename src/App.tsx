@@ -19,6 +19,7 @@ import { BadgeCollectionModal } from './components/badges/BadgeCollectionModal';
 import { WorldMapScreen } from './components/map/WorldMapScreen';
 import { LembahInformasiStage } from './components/stages/LembahInformasiStage';
 import { Mission01BriefingStage } from './components/stages/Mission01BriefingStage';
+import { PracticeRoomM01 } from './components/stages/PracticeRoomM01';
 import { SequencePuzzleStage } from './components/stages/SequencePuzzleStage';
 import { ProcedureGlitchStage } from './components/stages/ProcedureGlitchStage';
 import { EvidenceBoardStage } from './components/stages/EvidenceBoardStage';
@@ -56,7 +57,22 @@ export default function App() {
   };
 
   return (
-    <div className="relative w-screen h-screen bg-[#08131F] text-slate-100 overflow-hidden font-sans select-none">
+    <div className="relative w-screen h-screen bg-[#050B14] text-slate-100 overflow-hidden font-sans select-none">
+      {/* 1. ATMOSPHERIC TROPICAL FANTASY LIGHTING & AMBIENT AURORAS */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0B1E38]/30 via-transparent to-[#050B14]/90 pointer-events-none z-0" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="absolute top-1/3 right-10 w-80 h-80 bg-emerald-500/8 rounded-full blur-[100px] pointer-events-none z-0" />
+
+      {/* 2. CINEMATIC VIGNETTE OVERLAY */}
+      <div className="absolute inset-0 cinematic-vignette pointer-events-none z-30" />
+
+      {/* 3. ORNATE GAME HUD CORNER BRACKETS (ALL 4 CORNERS) */}
+      <div className="hud-corner-tl z-40 hidden sm:block" />
+      <div className="hud-corner-tr z-40 hidden sm:block" />
+      <div className="hud-corner-bl z-40 hidden sm:block" />
+      <div className="hud-corner-br z-40 hidden sm:block" />
+
       {/* Global Top Nav Stepper */}
       <StageStepperNav
         currentStage={currentStage}
@@ -74,7 +90,7 @@ export default function App() {
           soundFX.playChime('cyan');
           setIsArtBibleOpen(true);
         }}
-        className="fixed bottom-4 right-4 z-40 px-3.5 py-2 rounded-xl bg-[#0D2B45]/90 hover:bg-[#153B5C] text-[#FFE082] hover:text-white border border-[#D4AF37]/50 backdrop-blur-md shadow-[0_0_20px_rgba(212,175,55,0.3)] flex items-center gap-2 text-xs font-mono transition-all hover:scale-105 cursor-pointer"
+        className="fixed bottom-4 right-4 z-40 px-3.5 py-2 rounded-xl bg-[#091C33]/90 hover:bg-[#112E52] text-[#FFE082] hover:text-white border border-[#D4AF37]/60 backdrop-blur-md shadow-[0_4px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(212,175,55,0.3)] flex items-center gap-2 text-xs font-mono transition-all hover:scale-105 cursor-pointer"
         title="Buka Art Bible & Panduan Kurikulum"
       >
         <BookOpen className="w-4 h-4 text-[#FFE082]" />
@@ -138,6 +154,10 @@ export default function App() {
             soundFX.playChime('cyan');
             setCurrentStage('LEMBAH_INFORMASI');
           }}
+          onEnterMission01={() => {
+            soundFX.playChime('gold');
+            setCurrentStage('MISSION_01');
+          }}
           onEnterSequencePuzzle={() => {
             soundFX.playChime('cyan');
             setCurrentStage('SEQUENCE_PUZZLE');
@@ -171,16 +191,17 @@ export default function App() {
         />
       )}
 
-      {/* STAGE 4: MISSION 01 BRIEFING */}
+      {/* STAGE 4: MISSION 01 GOLD STANDARD VERTICAL SLICE: PRACTICE ROOM */}
       {currentStage === 'MISSION_01' && (
-        <Mission01BriefingStage
-          onNext={() => {
-            soundFX.playChime('cyan');
-            setCurrentStage('SEQUENCE_PUZZLE');
-          }}
-          onBack={() => {
+        <PracticeRoomM01
+          onBackToMap={() => {
             soundFX.playChime('click');
-            setCurrentStage('LEMBAH_INFORMASI');
+            setCurrentStage('WORLD_MAP');
+          }}
+          onMissionComplete={() => {
+            soundFX.playChime('victory');
+            setHighestReachedStageIndex((prev) => Math.max(prev, 5));
+            setCurrentStage('WORLD_MAP');
           }}
         />
       )}

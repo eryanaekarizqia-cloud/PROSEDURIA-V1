@@ -9,6 +9,9 @@ import worldGlitch from './images/world_glitch_state_1789447684307.jpg';
 import worldRestored from './images/world_restored_state_1789447703547.jpg';
 import badgeTrophy from './images/badge_trophy_set_1789447722269.jpg';
 import nusantaraWorldMap from './images/nusantara_world_map_1789448694165.jpg';
+import aksaraAvatarHD from './images/aksara_avatar_hd.png';
+import aksaraBustHD from './images/aksara_bust_hd.png';
+import aksaraFullHD from './images/aksara_full_hd.png';
 
 export const PROSEDURIA_ASSETS = {
   bgMain,
@@ -17,4 +20,7 @@ export const PROSEDURIA_ASSETS = {
   worldRestored,
   badgeTrophy,
   nusantaraWorldMap,
+  aksaraAvatarHD,
+  aksaraBustHD,
+  aksaraFullHD,
 };

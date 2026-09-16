@@ -31,47 +31,55 @@ export const AksaraSatchelModal: React.FC<AksaraSatchelModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  // Unlocked expedition keys based on player stage progress
+  // Unlocked expedition keys based on player stage progress for the 6 Islands
   const EXPEDITION_KEYS = [
     {
       id: 'key-1',
-      title: 'Kunci Segel Lembah',
-      region: 'Lembah Informasi',
-      desc: 'Membuka akses air terjun bertingkat & terasering jamu kuno.',
+      title: 'Kunci Segel Akademi',
+      region: 'Akademi PROSEDURIA',
+      desc: 'Membuka akses menara kristal safir & arsip 4 pilar teks prosedur.',
       unlocked: true,
-      icon: '🌿',
+      icon: '🏰',
     },
     {
       id: 'key-2',
-      title: 'Kunci Teratai Cyan',
-      region: 'Taman Bahasa',
-      desc: 'Membuka paviliun kata perintah & jembatan kristal konjungsi.',
+      title: 'Kunci Rempah Nusantara',
+      region: 'Pulau Rasa Nusantara',
+      desc: 'Membuka kedai rempah tradisional & takaran presisi jamu herbal.',
       unlocked: highestReachedStageIndex >= 4,
-      icon: '🪷',
+      icon: '🌶️',
     },
     {
       id: 'key-3',
-      title: 'Kunci Arung Logika',
-      region: 'Sungai Logika',
-      desc: 'Membuka ngarai arung jeram untuk menata kronologi langkah kerja.',
+      title: 'Kunci Hutan Biosfer',
+      region: 'Pulau Bumi Hijau',
+      desc: 'Membuka kubah bioma kaca raksasa & panduan konservasi alam.',
       unlocked: highestReachedStageIndex >= 6,
-      icon: '🌊',
+      icon: '🌿',
     },
     {
       id: 'key-4',
-      title: 'Kunci Kawah Basalt',
-      region: 'Kawasan Prosedur Rusak',
-      desc: 'Membuka altar candi anomali untuk mengaudit teks beracun & cacat logika.',
+      title: 'Kunci Candi Warisan',
+      region: 'Pulau Warisan',
+      desc: 'Membuka gapura merah candi, sanggar batik, dan alunan gamelan.',
       unlocked: highestReachedStageIndex >= 8,
-      icon: '🌋',
+      icon: '🏛️',
     },
     {
       id: 'key-5',
-      title: 'Kunci Pusaka Emas',
-      region: 'Tungku Cipta Prosedur',
-      desc: 'Kunci mahkota tertinggi untuk menempa teks prosedur orisinal.',
+      title: 'Kunci Bengkel Karya',
+      region: 'Pulau Karya',
+      desc: 'Membuka tungku cipta mandiri untuk merancang prosedur orisinal.',
       unlocked: highestReachedStageIndex >= 10,
-      icon: '👑',
+      icon: '⚙️',
+    },
+    {
+      id: 'key-6',
+      title: 'Kunci Gerbang Pamungkas',
+      region: 'Gerbang Pembuktian',
+      desc: 'Kunci mahkota tertinggi untuk menuntaskan evaluasi & kreasi C5-C6.',
+      unlocked: highestReachedStageIndex >= 12,
+      icon: '🌌',
     },
   ];
 

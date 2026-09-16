@@ -2,34 +2,158 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #050B14;
+    color: #F1F5F9;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, .font-cinzel {
-    font-family: 'Cinzel', serif;
+    font-family: 'Cinzel', Garamond, Georgia, serif;
+    letter-spacing: 0.05em;
   }
 
   .font-rajdhani {
-    font-family: 'Rajdhani', sans-serif;
+    font-family: 'Rajdhani', 'Space Mono', monospace, sans-serif;
   }
 }
 
-/* Custom cyber scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(8, 19, 31, 0.8);
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 242, 254, 0.3);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 242, 254, 0.6);
+/* ==========================================================================
+   PROSEDURIA VISUAL FOUNDATION: INDONESIAN TROPICAL FANTASY + PREMIUM HUD
+   ========================================================================== */
+
+:root {
+  --color-midnight: #050B14;
+  --color-navy-deep: #081326;
+  --color-navy-card: #0D1E36;
+  --color-blue-royal: #13325B;
+  --color-gold-bright: #FFE082;
+  --color-gold-metallic: #D4AF37;
+  --color-gold-dark: #8C6D23;
+  --color-cyan-glow: #00F2FE;
+  --color-cyan-deep: #0891B2;
+  --color-emerald-glow: #10B981;
+  --color-emerald-deep: #065F46;
+  --color-parchment-bg: #FAF5E8;
+  --color-parchment-border: #D6C29E;
+  --color-parchment-text: #2A2015;
 }
 
+/* Premium Fantasy Game HUD Container */
+.game-hud-frame {
+  position: relative;
+  background: linear-gradient(180deg, rgba(8, 19, 38, 0.95) 0%, rgba(5, 11, 20, 0.98) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 224, 130, 0.25), 0 0 20px rgba(0, 242, 254, 0.12);
+}
+
+/* Ornate Fantasy Panel with Beveled Rim and Subtle Inner Glow */
+.fantasy-panel {
+  background: radial-gradient(ellipse at top left, rgba(19, 50, 91, 0.5) 0%, rgba(8, 19, 38, 0.95) 70%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 0 25px rgba(212, 175, 55, 0.08);
+  border-radius: 18px;
+}
+
+/* Ancient Indonesian Lontar / Expedition Parchment Panel */
+.parchment-panel {
+  background: linear-gradient(135deg, #FAF5E8 0%, #F3EBD4 100%);
+  color: #2A2015;
+  border: 1.5px solid #D4AF37;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(180, 130, 60, 0.15);
+  border-radius: 14px;
+}
+
+/* Runic HUD Corner Brackets */
+.hud-corner-tl {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid #D4AF37;
+  border-left: 2px solid #D4AF37;
+  pointer-events: none;
+}
+.hud-corner-tr {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid #D4AF37;
+  border-right: 2px solid #D4AF37;
+  pointer-events: none;
+}
+.hud-corner-bl {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  width: 14px;
+  height: 14px;
+  border-bottom: 2px solid #D4AF37;
+  border-left: 2px solid #D4AF37;
+  pointer-events: none;
+}
+.hud-corner-br {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 14px;
+  height: 14px;
+  border-bottom: 2px solid #D4AF37;
+  border-right: 2px solid #D4AF37;
+  pointer-events: none;
+}
+
+/* Glowing Item Crystals & Badges */
+.badge-gold-rune {
+  background: linear-gradient(135deg, #F5C842 0%, #D4AF37 50%, #8C6D23 100%);
+  color: #050B14;
+  border: 1px solid #FFE082;
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+  font-weight: 700;
+}
+
+.badge-emerald-rune {
+  background: linear-gradient(135deg, #34D399 0%, #10B981 50%, #065F46 100%);
+  color: #FFFFFF;
+  border: 1px solid #6EE7B7;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+  font-weight: 700;
+}
+
+.badge-cyan-rune {
+  background: linear-gradient(135deg, #38BDF8 0%, #00F2FE 50%, #0369A1 100%);
+  color: #050B14;
+  border: 1px solid #BAE6FD;
+  box-shadow: 0 0 14px rgba(0, 242, 254, 0.45);
+  font-weight: 700;
+}
+
+/* Atmospheric Tropical Lighting & Vignette */
+.cinematic-vignette {
+  box-shadow: inset 0 0 100px rgba(5, 11, 20, 0.85), inset 0 0 180px rgba(0, 0, 0, 0.95);
+}
+
+/* Custom Gold & Cyan Fantasy Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(5, 11, 20, 0.95);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #D4AF37 0%, #00F2FE 100%);
+  border-radius: 4px;
+  border: 1px solid rgba(5, 11, 20, 0.8);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFE082 0%, #38BDF8 100%);
+}
+
+/* Glitch Animation Effect */
 @keyframes glitch-anim {
   0% {
     clip-path: inset(40% 0 61% 0);
@@ -83,5 +207,167 @@
   text-shadow: -2px 0 #FF0055;
   clip-path: inset(0 0 0 0);
   animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+/* ==========================================================================
+   MASTER PROMPT PROSEDURIA: 16:9 SHELL, 44PX BUTTONS, EVIDENCE & STATES
+   ========================================================================== */
+
+/* 16:9 Container Shell */
+.shell-16-9 {
+  width: 100%;
+  max-width: 1440px;
+  aspect-ratio: 16 / 9;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .shell-16-9-fit {
+    width: 100vw;
+    height: 56.25vw;
+  }
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .shell-16-9-fit {
+    height: 100vh;
+    width: 177.78vh;
+  }
+}
+
+/* Touch-Friendly Responsive Button System (Minimum 44px x 44px WCAG / Mobile Target) */
+.btn-touch {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-touch:active {
+  transform: scale(0.96);
+}
+
+/* Evidence Card Styling */
+.evidence-card {
+  position: relative;
+  background: linear-gradient(145deg, rgba(13, 30, 54, 0.9) 0%, rgba(6, 17, 32, 0.95) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+}
+
+.evidence-card:hover {
+  border-color: rgba(212, 175, 55, 0.8);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.25);
+  transform: translateY(-2px);
+}
+
+.evidence-card-active {
+  border-color: #00F2FE !important;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.4), inset 0 0 15px rgba(0, 242, 254, 0.15) !important;
+}
+
+.evidence-card-found {
+  border-color: #10B981 !important;
+  background: linear-gradient(145deg, rgba(6, 78, 59, 0.4) 0%, rgba(6, 17, 32, 0.95) 100%) !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.35) !important;
+}
+
+/* Efek Visual State */
+/* 1. TERKUNCI (Locked) */
+.state-terkunci,
+.state-locked {
+  filter: grayscale(0.5) brightness(0.8);
+  border-color: rgba(100, 116, 139, 0.4) !important;
+  opacity: 0.85;
+  position: relative;
+}
+
+.state-terkunci::after,
+.state-locked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(2, 6, 15, 0.7) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* 2. PULIH (Restored / Healing) */
+.state-pulih,
+.state-restored {
+  border-color: #10B981 !important;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.2) !important;
+  animation: pulse-emerald 3s infinite ease-in-out;
+}
+
+@keyframes pulse-emerald {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), inset 0 0 15px rgba(16, 185, 129, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(16, 185, 129, 0.7), inset 0 0 25px rgba(16, 185, 129, 0.3);
+  }
+}
+
+/* 3. SALAH / ANOMALI (Glitch / Error) */
+.state-salah,
+.state-error {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), inset 0 0 15px rgba(239, 68, 68, 0.2) !important;
+  animation: shake-error 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake-error {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* 4. BERHASIL (Success / Victory) */
+.state-berhasil,
+.state-success {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 15px rgba(0, 242, 254, 0.4), inset 0 0 20px rgba(212, 175, 55, 0.2) !important;
+  animation: victory-halo 2.5s infinite ease-in-out;
+}
+
+@keyframes victory-halo {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.5), 0 0 10px rgba(0, 242, 254, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 20px rgba(0, 242, 254, 0.6);
+  }
+}
+
+/* Dialogue Drawer Component */
+.dialogue-drawer {
+  background: linear-gradient(180deg, rgba(8, 23, 44, 0.96) 0%, rgba(4, 11, 22, 0.98) 100%);
+  border-top: 2px solid #D4AF37;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 242, 254, 0.15);
+  backdrop-filter: blur(16px);
+}
+
+/* Modal Overlay Backdrop */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(2, 6, 15, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 

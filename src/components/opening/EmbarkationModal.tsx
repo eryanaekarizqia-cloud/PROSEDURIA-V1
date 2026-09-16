@@ -128,7 +128,7 @@ export const EmbarkationModal: React.FC<EmbarkationModalProps> = ({
             }}
             className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5C842] to-[#B38728] hover:brightness-110 text-slate-950 font-['Cinzel'] font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-[0_0_25px_rgba(212,175,55,0.5)] cursor-pointer transition-all transform hover:scale-105"
           >
-            <span>Buka Peta 5 Zona</span>
+            <span>Buka Peta 6 Wilayah</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

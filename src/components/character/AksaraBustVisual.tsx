@@ -4,6 +4,8 @@
  */
 
 import React from 'react';
+import { Compass, Sparkles, HelpCircle, AlertCircle, Search, ThumbsUp } from 'lucide-react';
+import { PROSEDURIA_ASSETS } from '../../assets/proseduriaAssets';
 import { AksaraExpressionType } from './AksaraCharacterVisual';
 
 interface AksaraBustVisualProps {
@@ -12,11 +14,18 @@ interface AksaraBustVisualProps {
   isSpeaking?: boolean;
   className?: string;
   showCompassBadge?: boolean;
+  variant?: 'head' | 'bust';
 }
 
 /**
- * Aksara Bust Portrait Vector
- * Renders the accurate anime portrait of Aksara based on the character sheet expressions.
+ * Aksara Bust Portrait Visual
+ * Renders the authentic, high-definition anime portrait of Aksara (14-year-old Logic Explorer of Proseduria)
+ * matching the official character sheet and concept art:
+ * - Tousled dark spiky hair with soft bangs
+ * - Warm, confident amber-brown anime eyes
+ * - Royal navy blue explorer jacket with golden collar embroidery and filigree
+ * - Ornate golden Kompas Prosedur with radiant cyan star
+ * - Interactive anime emotion indicators (12 expressions)
  */
 export const AksaraBustVisual: React.FC<AksaraBustVisualProps> = ({
   expression = 'NORMAL',
@@ -24,216 +33,116 @@ export const AksaraBustVisual: React.FC<AksaraBustVisualProps> = ({
   isSpeaking = false,
   className = '',
   showCompassBadge = true,
+  variant = 'head',
 }) => {
-  const renderEyes = () => {
+  const imgSrc = variant === 'bust' ? PROSEDURIA_ASSETS.aksaraBustHD : PROSEDURIA_ASSETS.aksaraAvatarHD;
+
+  // Emotion-specific overlay badge / symbol
+  const renderEmotionOverlay = () => {
     switch (expression) {
       case 'SENANG':
-      case 'SUKSES':
         return (
-          <g>
-            <path d="M 36 48 Q 44 38 52 48" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" fill="none" />
-            <path d="M 68 48 Q 76 38 84 48" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" fill="none" />
-            <ellipse cx="34" cy="54" rx="5" ry="2.5" fill="#F43F5E" opacity="0.5" />
-            <ellipse cx="86" cy="54" rx="5" ry="2.5" fill="#F43F5E" opacity="0.5" />
-          </g>
+          <div className="absolute top-1 right-1 px-1 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-400 text-[10px] text-emerald-300 font-bold flex items-center gap-0.5 shadow-md animate-bounce">
+            <span>✨</span>
+          </div>
+        );
+      case 'BERSEMANGAT':
+        return (
+          <div className="absolute top-1 right-1 px-1.5 py-0.5 rounded-full bg-amber-950/80 border border-amber-400 text-[10px] text-amber-300 font-bold flex items-center gap-0.5 shadow-md animate-pulse">
+            <span>🔥</span>
+          </div>
         );
       case 'TERKEJUT':
-      case 'TAKJUB':
         return (
-          <g>
-            <ellipse cx="44" cy="46" rx="8" ry="10" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2" />
-            <ellipse cx="76" cy="46" rx="8" ry="10" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2" />
-            <circle cx="44" cy="46" r="6" fill="#92400E" />
-            <circle cx="44" cy="46" r="3" fill="#0F172A" />
-            <circle cx="76" cy="46" r="6" fill="#92400E" />
-            <circle cx="76" cy="46" r="3" fill="#0F172A" />
-            <circle cx="42" cy="43" r="2.5" fill="#FFFFFF" />
-            <circle cx="74" cy="43" r="2.5" fill="#FFFFFF" />
-          </g>
+          <div className="absolute top-0 right-1 px-1.5 py-0.5 rounded-full bg-orange-600 border border-white text-white font-black text-xs shadow-lg animate-ping">
+            !
+          </div>
+        );
+      case 'BERPIKIR':
+        return (
+          <div className="absolute top-1 right-1 p-1 rounded-full bg-indigo-950/90 border border-indigo-400 text-indigo-300 shadow-md">
+            <span className="text-[10px]">💭</span>
+          </div>
         );
       case 'BINGUNG':
         return (
-          <g>
-            <ellipse cx="44" cy="47" rx="7" ry="8" fill="#FFFFFF" stroke="#0F172A" strokeWidth="1.5" />
-            <circle cx="44" cy="47" r="5" fill="#B45309" />
-            <circle cx="42" cy="45" r="2" fill="#FFFFFF" />
-            <ellipse cx="76" cy="48" rx="6" ry="6" fill="#FFFFFF" stroke="#0F172A" strokeWidth="1.5" />
-            <circle cx="76" cy="48" r="4" fill="#B45309" />
-            <circle cx="74" cy="46" r="1.5" fill="#FFFFFF" />
-            {/* Raised eyebrow */}
-            <path d="M 36 36 Q 44 30 52 37" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-            <path d="M 68 40 Q 76 38 84 41" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          </g>
+          <div className="absolute top-0 right-1 p-0.5 rounded-full bg-purple-950/90 border border-purple-400 text-purple-300 shadow-md animate-bounce">
+            <HelpCircle className="w-3.5 h-3.5 text-purple-300" />
+          </div>
         );
       case 'SEDIH':
+        return (
+          <div className="absolute top-1 right-1 p-1 rounded-full bg-blue-950/90 border border-blue-400 text-blue-300 text-[10px]">
+            💧
+          </div>
+        );
       case 'KHAWATIR':
         return (
-          <g>
-            <ellipse cx="44" cy="48" rx="7" ry="8" fill="#FFFFFF" stroke="#0F172A" strokeWidth="1.5" />
-            <circle cx="44" cy="49" r="5" fill="#92400E" />
-            <circle cx="42" cy="46" r="2" fill="#FFFFFF" />
-            <ellipse cx="76" cy="48" rx="7" ry="8" fill="#FFFFFF" stroke="#0F172A" strokeWidth="1.5" />
-            <circle cx="76" cy="49" r="5" fill="#92400E" />
-            <circle cx="74" cy="46" r="2" fill="#FFFFFF" />
-            <path d="M 36 38 Q 44 33 52 39" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-            <path d="M 68 39 Q 76 33 84 38" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          </g>
+          <div className="absolute top-1 right-1 p-1 rounded-full bg-amber-950/90 border border-amber-400 text-amber-300 text-[10px] animate-pulse">
+            💦
+          </div>
         );
       case 'FOKUS':
+        return (
+          <div className="absolute inset-x-2 top-2 py-0.5 rounded bg-cyan-500/20 border border-cyan-400/80 text-[8px] font-mono text-cyan-200 text-center uppercase tracking-wider backdrop-blur-xs">
+            HUD FOCUS
+          </div>
+        );
       case 'MENYELIDIKI':
         return (
-          <g>
-            <ellipse cx="44" cy="47" rx="7" ry="7" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2" />
-            <ellipse cx="76" cy="47" rx="7" ry="7" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2" />
-            <circle cx="44" cy="47" r="4.5" fill="#0284C7" />
-            <circle cx="76" cy="47" r="4.5" fill="#0284C7" />
-            <circle cx="43" cy="45" r="1.5" fill="#FFFFFF" />
-            <circle cx="75" cy="45" r="1.5" fill="#FFFFFF" />
-            {/* Serious sharp eyebrows */}
-            <path d="M 36 38 L 52 40" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
-            <path d="M 84 38 L 68 40" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
-          </g>
+          <div className="absolute bottom-1 left-1 p-1 rounded-full bg-amber-950/90 border border-amber-400 text-amber-300 shadow-md">
+            <Search className="w-3 h-3 text-amber-300" />
+          </div>
         );
-      default:
-        // Normal warm anime eyes
+      case 'TAKJUB':
         return (
-          <g>
-            <ellipse cx="44" cy="47" rx="7.5" ry="9" fill="#FFFFFF" stroke="#0F172A" strokeWidth="1.5" />
-            <ellipse cx="76" cy="47" rx="7.5" ry="9" fill="#FFFFFF" stroke="#0F172A" strokeWidth="1.5" />
-            <ellipse cx="44" cy="47" rx="5" ry="6.5" fill="#B45309" />
-            <circle cx="44" cy="47" r="3" fill="#0F172A" />
-            <ellipse cx="76" cy="47" rx="5" ry="6.5" fill="#B45309" />
-            <circle cx="76" cy="47" r="3" fill="#0F172A" />
-            <circle cx="42" cy="44" r="2" fill="#FFFFFF" />
-            <circle cx="74" cy="44" r="2" fill="#FFFFFF" />
-            {/* Eyebrows */}
-            <path d="M 36 37 Q 44 33 52 38" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-            <path d="M 68 38 Q 76 33 84 37" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          </g>
+          <div className="absolute top-1 right-1 px-1 py-0.5 rounded-full bg-cyan-950/90 border border-cyan-300 text-cyan-300 text-[10px] font-bold shadow-md animate-spin-slow">
+            ✦
+          </div>
         );
-    }
-  };
-
-  const renderMouth = () => {
-    if (isSpeaking) {
-      return (
-        <path d="M 55 60 Q 60 67 65 60 Q 60 63 55 60 Z" fill="#E11D48" stroke="#881337" strokeWidth="1" />
-      );
-    }
-    switch (expression) {
-      case 'SENANG':
       case 'SUKSES':
-      case 'BERSEMANGAT':
         return (
-          <path d="M 54 59 Q 60 66 66 59" stroke="#991B1B" strokeWidth="2" strokeLinecap="round" fill="#E11D48" />
-        );
-      case 'TERKEJUT':
-        return (
-          <ellipse cx="60" cy="61" rx="3.5" ry="5" fill="#991B1B" stroke="#450A0A" strokeWidth="1" />
+          <div className="absolute bottom-1 right-1 p-1 rounded-full bg-emerald-500 border border-white text-white shadow-lg flex items-center justify-center">
+            <ThumbsUp className="w-3 h-3 text-white fill-current" />
+          </div>
         );
       default:
-        return (
-          <path d="M 55 60 Q 60 64 65 60" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" fill="none" />
-        );
+        return null;
     }
   };
 
   return (
     <div
-      className={`relative inline-flex items-center justify-center select-none rounded-full overflow-hidden ${className}`}
-      style={{ width: `${size}px`, height: `${size}px` }}
+      style={{ width: size, height: size }}
+      className={`relative rounded-full overflow-hidden shrink-0 select-none bg-gradient-to-b from-[#0e2a4a] via-[#08182b] to-[#040c18] border-2 border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.4)] flex items-center justify-center ${
+        isSpeaking ? 'ring-2 ring-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.6)]' : ''
+      } ${className}`}
     >
-      <svg
-        viewBox="0 0 120 120"
-        className="w-full h-full"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="bustBg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#0F2942" />
-            <stop offset="100%" stopColor="#081524" />
-          </linearGradient>
-          <linearGradient id="bustHoodie" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1E3A8A" />
-            <stop offset="100%" stopColor="#0F172A" />
-          </linearGradient>
-          <linearGradient id="bustHair" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#334155" />
-            <stop offset="100%" stopColor="#0F172A" />
-          </linearGradient>
-        </defs>
+      {/* High Definition Anime Illustration of Aksara */}
+      <img
+        src={imgSrc}
+        alt="Aksara - Penjelajah Logika"
+        referrerPolicy="no-referrer"
+        className="w-full h-full object-cover object-center scale-105 transition-transform duration-300 hover:scale-110"
+      />
 
-        {/* Circular Background */}
-        <circle cx="60" cy="60" r="58" fill="url(#bustBg)" stroke="#D4AF37" strokeWidth="2" />
+      {/* Subtle Inner Gradient & Vignette for Premium Depth */}
+      <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-amber-300/30 pointer-events-none bg-gradient-to-t from-[#040C1A]/60 via-transparent to-transparent" />
 
-        {/* Halo Glow */}
-        <circle cx="60" cy="50" r="42" fill="#38BDF8" opacity="0.1" />
+      {/* Speaking Sound Ripple Animation */}
+      {isSpeaking && (
+        <span className="absolute -inset-0.5 rounded-full border-2 border-rose-400 animate-ping pointer-events-none opacity-60" />
+      )}
 
-        {/* Neck & Collared Shirt */}
-        <rect x="52" y="65" width="16" height="15" fill="#FED7AA" />
-        <path d="M 48 76 L 60 92 L 72 76 Z" fill="#F8FAFC" />
-        <polygon points="58,80 62,80 60,86" fill="#F59E0B" />
+      {/* Emotion Overlay */}
+      {renderEmotionOverlay()}
 
-        {/* Navy Hoodie Shoulders */}
-        <path
-          d="M 20 120 L 25 88 Q 60 76 95 88 L 100 120 Z"
-          fill="url(#bustHoodie)"
-          stroke="#1E3A8A"
-          strokeWidth="1.5"
-        />
-
-        {/* Gold Chest Badge on Left */}
-        <g transform="translate(80, 92) scale(0.4)">
-          <circle cx="10" cy="10" r="9" fill="#F59E0B" />
-          <polygon points="10,2 12,8 18,10 12,12 10,18 8,12 2,10 8,8" fill="#0F172A" />
-        </g>
-
-        {/* Head & Face */}
-        <path
-          d="M 35 48 Q 30 65 60 75 Q 90 65 85 48 Q 85 28 60 28 Q 35 28 35 48 Z"
-          fill="#FED7AA"
-        />
-        {/* Ears */}
-        <ellipse cx="32" cy="50" rx="4" ry="6" fill="#FED7AA" />
-        <ellipse cx="88" cy="50" rx="4" ry="6" fill="#FED7AA" />
-
-        {/* Eyes */}
-        {renderEyes()}
-
-        {/* Nose */}
-        <path d="M 60 52 L 59 55 L 61 55" stroke="#B45309" strokeWidth="1" strokeLinecap="round" />
-
-        {/* Mouth */}
-        {renderMouth()}
-
-        {/* Shaggy Anime Hair */}
-        <g id="bustHair">
-          {/* Back Volume */}
-          <path
-            d="M 28 48 Q 22 25 45 16 Q 60 10 80 16 Q 98 25 92 48 Q 88 56 86 48 Q 80 20 60 19 Q 40 20 34 48 Z"
-            fill="url(#bustHair)"
-          />
-          {/* Front Bangs & Strands */}
-          <path d="M 30 38 Q 40 24 52 28 Q 45 36 42 44 Z" fill="url(#bustHair)" />
-          <path d="M 48 24 Q 60 18 70 28 Q 64 38 60 44 Z" fill="#1E293B" />
-          <path d="M 65 24 Q 80 18 90 34 Q 84 42 78 46 Z" fill="url(#bustHair)" />
-          {/* Stray center tuft */}
-          <path d="M 54 30 Q 60 22 64 32 Q 60 38 56 40 Z" fill="#334155" />
-          {/* Side tendrils */}
-          <path d="M 33 46 Q 31 56 36 60 Q 37 52 35 46 Z" fill="#1E293B" />
-          <path d="M 87 46 Q 89 56 84 60 Q 83 52 85 46 Z" fill="#1E293B" />
-        </g>
-
-        {/* Glowing Compass Badge at Bottom Right */}
-        {showCompassBadge && (
-          <g transform="translate(86, 86) scale(0.6)">
-            <circle cx="16" cy="16" r="15" fill="#0C4A6E" stroke="#F59E0B" strokeWidth="2.5" />
-            <polygon points="16,4 19,13 28,16 19,19 16,28 13,19 4,16 13,13" fill="#38BDF8" />
-            <circle cx="16" cy="16" r="3" fill="#FFFFFF" />
-          </g>
-        )}
-      </svg>
+      {/* Optional Miniature Golden Compass Badge */}
+      {showCompassBadge && size >= 48 && (
+        <div className="absolute bottom-0 right-0 p-1 rounded-full bg-[#08182B] border border-amber-400 text-amber-300 shadow-md flex items-center justify-center">
+          <Compass className="w-3 h-3 text-amber-300 fill-amber-300/20" />
+        </div>
+      )}
     </div>
   );
 };

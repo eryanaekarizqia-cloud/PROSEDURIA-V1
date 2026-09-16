@@ -24,6 +24,7 @@ import { soundFX } from '../../utils/audioEffects';
 import { aksaraVoice } from '../../utils/aksaraVoice';
 import { AksaraCharacterVisual } from './AksaraCharacterVisual';
 import { AksaraBustVisual } from './AksaraBustVisual';
+import { PROSEDURIA_ASSETS } from '../../assets/proseduriaAssets';
 
 export type AksaraExpression =
   | 'NORMAL'
@@ -513,26 +514,51 @@ export const AksaraCharacterSheetModal: React.FC<AksaraCharacterSheetModalProps>
               </div>
 
               {/* Visual Showcase Box */}
-              <div className="p-6 rounded-3xl bg-gradient-to-b from-[#0B2035] to-[#06101B] border-2 border-[#D4AF37]/50 flex flex-col items-center justify-center min-h-[280px]">
-                <div className="w-48 h-56 rounded-2xl bg-black/40 border border-cyan-400/30 flex flex-col items-center justify-center p-4 relative shadow-inner">
-                  {/* Visual Compass Graphic on character's back/chest */}
-                  <div className="w-24 h-24 rounded-full border-2 border-amber-400/80 bg-amber-400/10 flex items-center justify-center relative mb-3">
-                    <Compass className="w-12 h-12 text-amber-300 animate-spin" style={{ animationDuration: '20s' }} />
+              <div className="p-6 rounded-3xl bg-gradient-to-b from-[#0B2035] via-[#08182B] to-[#06101B] border-2 border-[#D4AF37]/50 flex flex-col items-center justify-center min-h-[340px]">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-2xl">
+                  {/* High Definition Character Portrait Card */}
+                  <div className="w-56 aspect-[3/4] rounded-2xl overflow-hidden bg-black/60 border-2 border-amber-400/80 shadow-[0_0_25px_rgba(212,175,55,0.4)] relative">
+                    <img
+                      src={PROSEDURIA_ASSETS.aksaraFullHD}
+                      alt="Aksara Turnaround"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-contain p-1"
+                    />
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/80 border border-amber-400 text-[10px] font-mono font-bold text-amber-300">
+                      {activeTurnaround}
+                    </div>
                   </div>
-                  <div className="font-['Cinzel'] font-bold text-sm text-[#FFE082]">
-                    Sudut {activeTurnaround.replace('_', ' ')}
-                  </div>
-                  <div className="text-[11px] font-mono text-cyan-300 mt-1">
-                    {activeTurnaround.includes('BELAKANG')
-                      ? 'Emblem Lambang Bintang Kompas Emas Terlihat Jelas di Punggung'
-                      : activeTurnaround.includes('SAMPING')
-                      ? 'Tali Selempang Tas Kulit Cokelat & Wristband Kompas'
-                      : 'Jaket Biru Dongker, Kemeja Putih, Kompas Prosedur Menyala'}
-                  </div>
-                </div>
 
-                <div className="mt-4 max-w-md text-center text-xs text-slate-300 leading-relaxed font-sans">
-                  Karakter dirancang dengan proporsi ramah remaja (usia 14 tahun), memadukan estetika modern (hoodie, cargo pants) dengan sentuhan ornamen emas khas kepulauan Nusantara.
+                  {/* Turnaround Anatomy Details */}
+                  <div className="flex-1 space-y-3">
+                    <div className="font-['Cinzel'] font-bold text-lg text-[#FFE082] flex items-center gap-2">
+                      <Compass className="w-5 h-5 text-amber-400" />
+                      <span>Sudut {activeTurnaround.replace('_', ' ')}</span>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-black/40 border border-white/10 text-xs font-mono space-y-2 text-slate-200">
+                      <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
+                        <span className="text-slate-400">BAGIAN ATAS</span>
+                        <span className="text-amber-300 font-bold">Rambut Acak Cokelat Gelap & Hoodie Biru</span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
+                        <span className="text-slate-400">EMBLEM PUNGGUNG</span>
+                        <span className="text-cyan-300 font-bold">Bintang Kompas Emas 8-Arah</span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
+                        <span className="text-slate-400">PERLENGKAPAN</span>
+                        <span className="text-amber-300 font-bold">Tas Kulit Cokelat & Kompas Arkana</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400">SEPATU PENJELAJAH</span>
+                        <span className="text-emerald-300 font-bold">Sneaker Biru-Emas Tali Ganda</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-300 leading-relaxed italic">
+                      "Setiap langkah membentuk logika, setiap logika memperbaiki dunia." Aksara membawa perpaduan gaya remaja masa kini dan pusaka petualang Nusantara.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
