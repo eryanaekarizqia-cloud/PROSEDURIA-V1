@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { soundFX } from '../../utils/audioEffects';
+import { gameStateManager } from '../../utils/gameStateManager';
 import {
   ArrowLeft,
   Zap,
@@ -88,7 +89,12 @@ export const FinalCaseStage: React.FC<FinalCaseStageProps> = ({
     if (opt.correct) {
       soundFX.playChime('victory');
       if (!solvedIds.includes(incident.id)) {
-        setSolvedIds([...solvedIds, incident.id]);
+        const nextSolved = [...solvedIds, incident.id];
+        setSolvedIds(nextSolved);
+        if (nextSolved.length === INCIDENTS.length) {
+          gameStateManager.save({ finalCaseCompleted: true });
+          gameStateManager.unlockBadge('penyelamat_krisis');
+        }
       }
     } else {
       soundFX.playChime('error');
@@ -144,7 +150,11 @@ export const FinalCaseStage: React.FC<FinalCaseStageProps> = ({
       </div>
 
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="final_case" className="mb-3 max-w-4xl mx-auto w-full" />
+      <MissionGuideBox
+        stageKey="final_case"
+        mood={isAllSolved ? 'proud' : (solvedIds.length > 0 ? 'encouraging' : 'concerned')}
+        className="mb-3 max-w-4xl mx-auto w-full"
+      />
 
       {/* Main Boss Incident Arena */}
       <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 my-2 grid grid-cols-1 md:grid-cols-3 gap-5">

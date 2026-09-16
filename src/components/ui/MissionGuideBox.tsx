@@ -24,7 +24,41 @@ interface MissionGuideBoxProps {
   customSpokenText?: string;
   defaultExpanded?: boolean;
   className?: string;
+  mood?: 'curious' | 'concerned' | 'encouraging' | 'surprised' | 'proud';
 }
+
+const MOOD_CONFIG = {
+  curious: {
+    emoji: '🧐',
+    label: 'Penasaran & Meneliti',
+    badgeClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-400/40',
+    glow: 'rgba(6,182,212,0.3)',
+  },
+  concerned: {
+    emoji: '⚠️',
+    label: 'Waspada Glitch',
+    badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-400/40',
+    glow: 'rgba(244,63,94,0.3)',
+  },
+  encouraging: {
+    emoji: '✨',
+    label: 'Menyemangati',
+    badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-400/40',
+    glow: 'rgba(245,158,11,0.3)',
+  },
+  surprised: {
+    emoji: '💡',
+    label: 'Menemukan Celah',
+    badgeClass: 'bg-purple-500/20 text-purple-300 border-purple-400/40',
+    glow: 'rgba(168,85,247,0.3)',
+  },
+  proud: {
+    emoji: '🏆',
+    label: 'Bangga & Berhasil',
+    badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40',
+    glow: 'rgba(16,185,129,0.3)',
+  },
+};
 
 export const MissionGuideBox: React.FC<MissionGuideBoxProps> = ({
   stageKey,
@@ -33,6 +67,7 @@ export const MissionGuideBox: React.FC<MissionGuideBoxProps> = ({
   customSpokenText,
   defaultExpanded = true,
   className = '',
+  mood = 'encouraging',
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultExpanded);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
@@ -45,6 +80,7 @@ export const MissionGuideBox: React.FC<MissionGuideBoxProps> = ({
     '3. Validasi hasil pekerjaan untuk menyelesaikan tantangan.',
   ];
   const spokenText = customSpokenText || guide?.spokenText || 'Ayo ikuti petunjuk pengerjaan ini agar kamu bisa menyelesaikan misi dengan nilai sempurna!';
+  const activeMood = MOOD_CONFIG[mood] || MOOD_CONFIG.encouraging;
 
   useEffect(() => {
     const handleVoiceState = (speaking: boolean) => {
@@ -72,13 +108,20 @@ export const MissionGuideBox: React.FC<MissionGuideBoxProps> = ({
       {/* Top Banner Header */}
       <div className="px-4 py-2.5 flex items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02]">
         <div className="flex items-center gap-2.5 min-w-0">
-          {/* Aksara Character Portrait Avatar */}
-          <div className="relative flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-200 p-[1.5px] shadow-[0_0_12px_rgba(245,158,11,0.4)]">
+          {/* Aksara Character Portrait Avatar with contextual mood indicator */}
+          <div className="relative flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-200 p-[1.5px] shadow-[0_0_12px_rgba(245,158,11,0.4)]">
             <div className="w-full h-full rounded-full bg-[#07131F] flex items-center justify-center overflow-hidden">
-              <span className="text-sm select-none" role="img" aria-label="Aksara">
+              <span className="text-base select-none" role="img" aria-label="Aksara">
                 🧑‍🎓
               </span>
             </div>
+            {/* Mood Reaction Mini Badge */}
+            <span
+              className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-slate-900 border border-white/30 flex items-center justify-center text-[9px] shadow-sm"
+              title={`Reaksi Aksara: ${activeMood.label}`}
+            >
+              {activeMood.emoji}
+            </span>
             {isSpeaking && (
               <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-slate-900 animate-ping" />
             )}
@@ -87,10 +130,13 @@ export const MissionGuideBox: React.FC<MissionGuideBoxProps> = ({
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-[#FFE082] border border-amber-400/30">
-                PANDUAN AKSARA (SISWA KELAS IX)
+                AKSARA • 14 TAHUN (KELAS IX)
               </span>
-              <span className="text-[10px] text-cyan-300 font-mono hidden sm:inline">
-                • Suara Anak Laki-Laki
+              <span
+                className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded border ${activeMood.badgeClass} hidden sm:inline-flex items-center gap-1`}
+              >
+                <span>{activeMood.emoji}</span>
+                <span>{activeMood.label}</span>
               </span>
             </div>
             <h4 className="text-xs sm:text-sm font-bold text-white truncate font-sans tracking-wide">

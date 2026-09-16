@@ -5,6 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { soundFX } from '../../utils/audioEffects';
+import { gameStateManager } from '../../utils/gameStateManager';
 import { PROSEDURIA_ASSETS } from '../../assets/proseduriaAssets';
 import {
   Award,
@@ -35,9 +36,9 @@ const BADGES_COLLECTION = [
   { id: 'b1', name: 'Pengumpul Bukti', icon: Search, color: 'from-cyan-400 to-blue-500', border: 'border-cyan-400', desc: 'Menemukan anomali di Lembah Informasi' },
   { id: 'b2', name: 'Penalar Urutan', icon: Layers, color: 'from-indigo-400 to-purple-500', border: 'border-indigo-400', desc: 'Menyusun urutan 1-5 tanpa celah' },
   { id: 'b3', name: 'Ahli Bahasa', icon: BookOpen, color: 'from-emerald-400 to-teal-500', border: 'border-emerald-400', desc: 'Menguasai verba imperatif & adverbia presisi' },
-  { id: 'b4', name: 'Detektif Glitch', icon: Bug, color: 'from-rose-400 to-pink-500', border: 'border-rose-400', desc: 'Mendiagnosa 4 anomali sintaksis fatal' },
+  { id: 'b4', name: 'Detektif Kerancuan', icon: Bug, color: 'from-rose-400 to-pink-500', border: 'border-rose-400', desc: 'Mendiagnosa 4 anomali sintaksis fatal' },
   { id: 'b5', name: 'Insinyur Perbaikan', icon: Wrench, color: 'from-amber-400 to-orange-500', border: 'border-amber-400', desc: 'Merekayasa prosedur reaktor 100% stabil' },
-  { id: 'b6', name: 'Master Penjelajah Logika', icon: Trophy, color: 'from-yellow-300 to-amber-500', border: 'border-yellow-300', desc: 'Penyelaras dunia Proseduria Nusantara' },
+  { id: 'b6', name: 'Penjelajah Logika Utama', icon: Trophy, color: 'from-yellow-300 to-amber-500', border: 'border-yellow-300', desc: 'Penyelaras dunia Proseduria Nusantara' },
 ];
 
 export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
@@ -48,6 +49,16 @@ export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
 
   useEffect(() => {
     soundFX.playChime('victory');
+    const state = gameStateManager.load();
+    const completed = state.completedMissions.includes('mission_1')
+      ? state.completedMissions
+      : [...state.completedMissions, 'mission_1'];
+    const zones = Array.from(new Set([...state.unlockedZones, 'zone_1', 'zone_2']));
+    gameStateManager.save({
+      completedMissions: completed,
+      unlockedZones: zones,
+    });
+    gameStateManager.unlockBadge('penyelaras_nusantara');
   }, []);
 
   return (
@@ -68,7 +79,7 @@ export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
       {/* Central Celebration Hero */}
       <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 flex flex-col items-center justify-center text-center my-2">
         {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-        <MissionGuideBox stageKey="reward_celebration" className="w-full mb-4 text-left" />
+        <MissionGuideBox stageKey="reward_celebration" mood="proud" className="w-full mb-4 text-left" />
 
         {/* Glowing Badge Emblem */}
         <div className="relative mb-3">
@@ -91,7 +102,7 @@ export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
         </h1>
         <p className="text-xs sm:text-sm text-slate-200 max-w-2xl mb-4 leading-relaxed">
           Kamu telah berhasil mengurai kekacauan sintaksis, menyusun urutan logis,
-          mendeteksi glitch kebahasaan, dan merekonstruksi prosedur reaktor hingga beroperasi 100% stabil.
+          mendeteksi kerancuan kebahasaan, dan merekonstruksi prosedur reaktor hingga beroperasi 100% stabil.
         </p>
 
         {/* Toggle between World Restoration vs Badge Collection */}
@@ -114,7 +125,7 @@ export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
                 : 'bg-white/10 text-slate-300 hover:bg-white/15'
             }`}
           >
-            🏅 Koleksi 6 Badge Prestasi
+            🏅 Koleksi 6 Lencana Prestasi
           </button>
         </div>
 
@@ -202,7 +213,7 @@ export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
             <Sparkles className="w-5 h-5 text-[#00F2FE] mx-auto mb-1" />
             <div className="text-[10px] font-mono text-slate-400">Pengalaman:</div>
             <div className="text-xs font-bold text-[#00F2FE] font-mono">
-              +500 XP & Nilai C5 Sempurna
+              +500 XP & Pemulihan Sempurna
             </div>
           </div>
 
@@ -210,7 +221,7 @@ export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
             <Flame className="w-5 h-5 text-purple-400 mx-auto mb-1" />
             <div className="text-[10px] font-mono text-slate-400">Izin Akses:</div>
             <div className="text-xs font-bold text-purple-300 font-['Cinzel']">
-              Procedure Forge (C6) Terbuka
+              Tungku Cipta Prosedur Terbuka
             </div>
           </div>
         </div>
@@ -247,7 +258,7 @@ export const RewardCelebrationStage: React.FC<RewardCelebrationStageProps> = ({
           }}
           className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_25px_rgba(236,72,153,0.5)] flex items-center gap-2 cursor-pointer active:scale-95"
         >
-          <span>Masuk Procedure Forge (Tahap 11 - C6 Mencipta)</span>
+          <span>Lanjut ke Evaluasi Kemahiran & Piagam (Tahap 11)</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

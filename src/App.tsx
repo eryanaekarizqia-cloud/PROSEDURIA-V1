@@ -259,21 +259,7 @@ export default function App() {
       {currentStage === 'REWARD' && (
         <RewardCelebrationStage
           onNext={() => {
-            soundFX.playChime('cyan');
-            setCurrentStage('PROCEDURE_FORGE');
-          }}
-          onBackToMap={() => {
-            soundFX.playChime('click');
-            setCurrentStage('WORLD_MAP');
-          }}
-        />
-      )}
-
-      {/* STAGE 11: PROCEDURE FORGE (C6 CREATING) */}
-      {currentStage === 'PROCEDURE_FORGE' && (
-        <ProcedureForge
-          onProceedToMastery={() => {
-            soundFX.playChime('victory');
+            soundFX.playChime('gold');
             setCurrentStage('MASTERY');
           }}
           onBackToMap={() => {
@@ -283,12 +269,16 @@ export default function App() {
         />
       )}
 
-      {/* STAGE 12: MASTERY DEBRIEF */}
+      {/* STAGE 11: MASTERY DEBRIEF & WORLD RESTORATION */}
       {currentStage === 'MASTERY' && (
         <MasteryDebriefStage
           onBackToMap={() => {
             soundFX.playChime('cyan');
             setCurrentStage('WORLD_MAP');
+          }}
+          onEnterProcedureForge={() => {
+            soundFX.playChime('gold');
+            setCurrentStage('PROCEDURE_FORGE');
           }}
           onRestartLoop={() => {
             soundFX.playChime('gold');
@@ -297,7 +287,25 @@ export default function App() {
         />
       )}
 
-      {/* BONUS FINAL BOSS STAGE: FINAL CASE */}
+      {/* STAGE 12: PROCEDURE FORGE (C6 CREATING) */}
+      {currentStage === 'PROCEDURE_FORGE' && (
+        <ProcedureForge
+          onProceedToFinalCase={() => {
+            soundFX.playChime('victory');
+            setCurrentStage('FINAL_CASE');
+          }}
+          onProceedToMastery={() => {
+            soundFX.playChime('victory');
+            setCurrentStage('FINAL_CASE');
+          }}
+          onBackToMap={() => {
+            soundFX.playChime('click');
+            setCurrentStage('WORLD_MAP');
+          }}
+        />
+      )}
+
+      {/* STAGE 13: BONUS FINAL BOSS STAGE: FINAL CASE */}
       {currentStage === 'FINAL_CASE' && (
         <FinalCaseStage
           onBackToMap={() => {

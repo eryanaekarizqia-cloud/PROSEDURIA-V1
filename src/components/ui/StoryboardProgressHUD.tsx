@@ -28,10 +28,10 @@ export const STORYBOARD_STEPS: StoryboardStep[] = [
   { step: 1, label: 'AMATI', sub: 'Temukan hal janggal', icon: Search, color: 'from-cyan-400 to-blue-500', badgeBg: 'bg-cyan-500/20 border-cyan-400 text-cyan-300' },
   { step: 2, label: 'BUKTI', sub: 'Kumpulkan data', icon: FileText, color: 'from-sky-400 to-indigo-500', badgeBg: 'bg-sky-500/20 border-sky-400 text-sky-300' },
   { step: 3, label: 'ANALISIS', sub: 'Sebab & akibat', icon: GitCommit, color: 'from-blue-400 to-violet-500', badgeBg: 'bg-blue-500/20 border-blue-400 text-blue-300' },
-  { step: 4, label: 'DIAGNOSIS', sub: 'Deteksi glitch', icon: Stethoscope, color: 'from-rose-400 to-pink-500', badgeBg: 'bg-rose-500/20 border-rose-400 text-rose-300' },
+  { step: 4, label: 'DIAGNOSIS', sub: 'Deteksi kerancuan', icon: Stethoscope, color: 'from-rose-400 to-pink-500', badgeBg: 'bg-rose-500/20 border-rose-400 text-rose-300' },
   { step: 5, label: 'PERBAIKI', sub: 'Susun urutan 1-4', icon: Wrench, color: 'from-amber-400 to-orange-500', badgeBg: 'bg-amber-500/20 border-amber-400 text-amber-300' },
   { step: 6, label: 'UJI COBA', sub: 'Simulasi reaksi', icon: FlaskConical, color: 'from-emerald-400 to-teal-500', badgeBg: 'bg-emerald-500/20 border-emerald-400 text-emerald-300' },
-  { step: 7, label: 'RANCANG', sub: 'Procedure forge', icon: Hammer, color: 'from-yellow-400 to-amber-500', badgeBg: 'bg-yellow-500/20 border-yellow-400 text-yellow-300' },
+  { step: 7, label: 'RANCANG', sub: 'Tungku cipta teks', icon: Hammer, color: 'from-yellow-400 to-amber-500', badgeBg: 'bg-yellow-500/20 border-yellow-400 text-yellow-300' },
   { step: 8, label: 'BUKTIKAN', sub: 'Dunia pulih!', icon: Trophy, color: 'from-amber-300 to-yellow-400', badgeBg: 'bg-amber-400/20 border-amber-300 text-amber-200' },
 ];
 

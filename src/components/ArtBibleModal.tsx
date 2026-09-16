@@ -14,6 +14,9 @@ import {
   Volume2,
   Cpu,
   BookmarkCheck,
+  ShieldCheck,
+  CheckCircle2,
+  HelpCircle,
 } from 'lucide-react';
 
 interface ArtBibleModalProps {
@@ -22,13 +25,13 @@ interface ArtBibleModalProps {
 }
 
 export const ArtBibleModal: React.FC<ArtBibleModalProps> = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState<'PEDAGOGY' | 'VISUAL' | 'COLOR' | 'AUDIO'>('PEDAGOGY');
+  const [activeTab, setActiveTab] = useState<'MANIFESTO' | 'PEDAGOGY' | 'VISUAL' | 'COLOR' | 'AUDIO'>('MANIFESTO');
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-3xl bg-[#08131F] border border-[#D4AF37]/50 rounded-2xl shadow-[0_0_60px_rgba(212,175,55,0.25)] overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-4xl bg-[#08131F] border border-[#D4AF37]/50 rounded-2xl shadow-[0_0_60px_rgba(212,175,55,0.25)] overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-[#0D2B45]/90 border-b border-[#D4AF37]/30">
           <div className="flex items-center gap-2.5">
@@ -40,7 +43,7 @@ export const ArtBibleModal: React.FC<ArtBibleModalProps> = ({ isOpen, onClose })
                 Art Bible & Desain Sistem Pedagogis
               </h2>
               <p className="text-[11px] font-mono text-[#FFE082]/80">
-                CHRONO-AKSARA // ARSIP SPESIFIKASI DESAIN & KURIKULUM
+                PROSEDURIA // DOKUMEN SPESIFIKASI KURIKULUM & 10 PILAR PERMAINAN
               </p>
             </div>
           </div>
@@ -49,15 +52,16 @@ export const ArtBibleModal: React.FC<ArtBibleModalProps> = ({ isOpen, onClose })
               soundFX.playChime('click');
               onClose();
             }}
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-white/10 px-6 bg-[#08131F]/90">
+        <div className="flex border-b border-white/10 px-6 bg-[#08131F]/90 overflow-x-auto">
           {[
+            { id: 'MANIFESTO', label: '10 Pilar & Desain Game', icon: ShieldCheck },
             { id: 'PEDAGOGY', label: 'Kurikulum & Bloom C1-C6', icon: Layers },
             { id: 'VISUAL', label: 'Konsep Visual & Tipografi', icon: Sparkles },
             { id: 'COLOR', label: 'Palet Warna & UI Token', icon: Palette },
@@ -72,15 +76,14 @@ export const ArtBibleModal: React.FC<ArtBibleModalProps> = ({ isOpen, onClose })
                   soundFX.playChime('click');
                   setActiveTab(tab.id as typeof activeTab);
                 }}
-                className={`py-3 px-3 sm:px-4 text-xs font-mono font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
+                className={`py-3 px-3 sm:px-4 text-xs font-mono font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
                   isActive
                     ? 'border-[#D4AF37] text-[#FFE082] bg-[#D4AF37]/10'
                     : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.id}</span>
+                <span>{tab.label}</span>
               </button>
             );
           })}
@@ -88,6 +91,132 @@ export const ArtBibleModal: React.FC<ArtBibleModalProps> = ({ isOpen, onClose })
 
         {/* Tab Content */}
         <div className="p-6 overflow-y-auto space-y-4">
+          {activeTab === 'MANIFESTO' && (
+            <div className="space-y-4 text-xs sm:text-sm text-slate-200 font-sans">
+              <div className="p-4 rounded-xl bg-[#0D2B45]/60 border border-[#D4AF37]/40 shadow-inner">
+                <h3 className="font-['Cinzel'] font-bold text-[#FFE082] text-sm sm:text-base mb-1.5 flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-amber-300" />
+                  Manifesto Desain & 10 Pilar Pembelajaran PROSEDURIA
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  PROSEDURIA dibangun di atas prinsip: <em>“Game petualangan nyata yang mengajarkan teks prosedur, bukan kuis berbungkus grafis game.”</em>
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                {/* 1. What it is */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-cyan-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] flex items-center justify-center font-bold">1</span>
+                    Apa itu PROSEDURIA?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Game petualangan edukatif interaktif bertema Neo-Heritage Cyber-Nusantara. Siswa berperan sebagai Penjelajah Logika untuk menyelamatkan benua masa depan dari krisis anomali teks dan kegagalan reaktor energi.
+                  </p>
+                </div>
+
+                {/* 2. Who it is for */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-amber-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] flex items-center justify-center font-bold">2</span>
+                    Untuk Siapa Game Ini?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Dikhususkan untuk peserta didik SMP/MTs (Fase D Kurikulum Merdeka) dan pengenalan SMA, serta dapat digunakan oleh guru bahasa Indonesia sebagai media pembelajaran berbasis gamifikasi mendalam.
+                  </p>
+                </div>
+
+                {/* 3. What students learn */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-emerald-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] flex items-center justify-center font-bold">3</span>
+                    Apa yang Dipelajari Siswa?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Struktur 4 pilar teks prosedur (Tujuan, Material/Alat, Langkah-langkah, Tips/Penutup), kalimat imperatif baku berakhiran <em>-kan/-i/-lah</em>, konjungsi temporal kronologis, dan adverbia takaran kuantitatif presisi.
+                  </p>
+                </div>
+
+                {/* 4. Why different from quiz */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-purple-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] flex items-center justify-center font-bold">4</span>
+                    Mengapa Berbeda dari Kuis Biasa?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Bukan pilihan ganda statis. Teks diperlakukan sebagai sistem mesin hidup: kesalahan logika berakibat fatal pada simulasi reaktor, dan tindakan pemain memberikan umpan balik kausal seketika.
+                  </p>
+                </div>
+
+                {/* 5. How students investigate */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-sky-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-sky-500/20 text-sky-300 text-[10px] flex items-center justify-center font-bold">5</span>
+                    Bagaimana Siswa Menginvestigasi?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Siswa melakukan analisis forensik dokumen SOP reaktor yang rusak, memeriksa ketidakkonsistenan ukuran, melacak urutan langkah terbalik, dan mengumpulkan temuan anomali bahasa.
+                  </p>
+                </div>
+
+                {/* 6. How evidence is used */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-pink-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-pink-500/20 text-pink-300 text-[10px] flex items-center justify-center font-bold">6</span>
+                    Bagaimana Bukti Digunakan?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Di Papan Bukti (Evidence Board), siswa menghubungkan potongan teks yang bermasalah dengan kaidah kebahasaan yang dilanggar, disertai penjelasan kausal mengapa anomali tersebut berbahaya.
+                  </p>
+                </div>
+
+                {/* 7. How Procedure Glitch works */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-rose-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] flex items-center justify-center font-bold">7</span>
+                    Bagaimana Procedure Glitch Bekerja?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Siswa memindai instruksi baris per baris. Menemukan kalimat cacat (takaran ambigu, kata pasif deskriptif) memicu deteksi glitch dan memberikan penguatan atas kaidah yang benar.
+                  </p>
+                </div>
+
+                {/* 8. How procedures are repaired */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-teal-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] flex items-center justify-center font-bold">8</span>
+                    Bagaimana Prosedur Diperbaiki?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Di Bengkel Rekonstruksi, siswa menyunting dan memilih formulasi kalimat imperatif paling baku, mengganti kata 'secukupnya' dengan mililiter presisi, lalu memverifikasinya di simulator uji reaktor.
+                  </p>
+                </div>
+
+                {/* 9. How procedures are created */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-yellow-300 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-yellow-500/20 text-yellow-300 text-[10px] flex items-center justify-center font-bold">9</span>
+                    Bagaimana Prosedur Diciptakan?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Di Tungku Cipta Prosedur (C6), siswa merancang teks prosedur orisinal dengan bantuan linter bahasa real-time yang memvalidasi struktur, konjungsi urutan, serta verba perintah.
+                  </p>
+                </div>
+
+                {/* 10. How mastery is demonstrated */}
+                <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                  <div className="font-mono font-bold text-emerald-400 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] flex items-center justify-center font-bold">10</span>
+                    Bagaimana Kemahiran Dibuktikan?
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    Dibuktikan melalui pemenuhan Taksonomi Bloom C1-C6, perolehan Piagam Kelulusan Sintaksis resmi, 6 lencana prestasi, refleksi diri mandiri, dan penyelesaian Kasus Pamungkas reaktor antariksa.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'PEDAGOGY' && (
             <div className="space-y-4 text-sm text-slate-300 font-sans">
               <div className="p-4 rounded-xl bg-[#0D2B45]/50 border border-white/10">

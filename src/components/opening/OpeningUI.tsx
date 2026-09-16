@@ -31,6 +31,8 @@ import {
 } from 'lucide-react';
 import { WorldRestorationSlider } from '../restoration/WorldRestorationSlider';
 import { MissionGuideBox } from '../ui/MissionGuideBox';
+import { AksaraVideoPlayer } from './AksaraVideoPlayer';
+import { AksaraCharacterSheetModal } from '../character/AksaraCharacterSheetModal';
 
 export interface AksaraStation {
   id: number;
@@ -78,7 +80,7 @@ const AKSARA_PROLOGUE_STATIONS: AksaraStation[] = [
     id: 3,
     name: 'Altar Emas Maestro Majapahit',
     shortName: 'Altar Emas',
-    stageBadge: 'Tahap 9-12 • Puncak Kreasi C6',
+    stageBadge: 'Tahap 9-12 • Puncak Kreasi Pusaka',
     positionDescription: 'Bertengger di altar pusaka keemasan tertinggi dengan radiasi energi penulisan presisi.',
     containerClass: 'md:-translate-x-10 lg:-translate-x-20 scale-105 ring-2 ring-amber-400/70 shadow-[0_0_50px_rgba(212,175,55,0.8)]',
     auraColor: 'from-amber-400/35 via-yellow-500/20 to-transparent',
@@ -110,6 +112,7 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
   highestReachedStageIndex = 1,
 }) => {
   const [showRestorationModal, setShowRestorationModal] = useState(false);
+  const [isCharacterSheetOpen, setIsCharacterSheetOpen] = useState(false);
   const [speechBubbleOpen, setSpeechBubbleOpen] = useState(true);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -219,7 +222,7 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
               className="px-3 py-1 rounded-full bg-[#0D2B45]/90 hover:bg-[#153B5C] border border-[#D4AF37]/60 hover:border-[#FFE082] text-[11px] font-mono font-bold text-[#FFE082] flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all cursor-pointer group"
             >
               <Layers className="w-3.5 h-3.5 text-[#FFE082] group-hover:rotate-12 transition-transform" />
-              <span>JELAJAHI PETA BENUA (WORLD MAP)</span>
+              <span>JELAJAHI PETA BENUA</span>
               <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
             </button>
           )}
@@ -323,10 +326,10 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
                   onOpenBadges();
                 }}
                 className="px-3.5 py-3.5 rounded-2xl bg-[#08182B]/80 hover:bg-[#0E2841] border border-[#D4AF37]/40 text-[#FFE082] text-xs font-mono font-bold flex items-center gap-1.5 backdrop-blur-md transition-all cursor-pointer"
-                title="Buka Koleksi 6 Badge & Piala"
+                title="Buka Koleksi 6 Lencana & Piala"
               >
                 <Award className="w-4 h-4 text-amber-400" />
-                <span className="hidden sm:inline">Koleksi Badge</span>
+                <span className="hidden sm:inline">Koleksi Lencana</span>
               </button>
             )}
           </div>
@@ -423,57 +426,17 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
             </div>
           )}
 
-          {/* B. CHARACTER DISPLAY CARD (MATCHING USER ATTACHED DESIGN EXACTLY) */}
+          {/* B. CINEMATIC VIDEO PLAYER (REPLACING STATIC PHOTO WITH ATTACHED VIDEO & CHARACTER SHEET) */}
           <div
-            onClick={handleSpeakAksara}
-            className={`group relative cursor-pointer transition-all duration-300 ${
-              characterReaction ? 'scale-105 -translate-y-2' : 'hover:scale-[1.01]'
-            }`}
+            className="transition-all duration-300"
             style={{
               transform: `translate3d(${parallaxX}px, ${parallaxY}px, 0)`,
             }}
-            title="Klik Aksara untuk Mendengarkan Panduan Suara!"
           >
-            {/* Card Frame Container with Clean Luminous White/Gold Canvas (Matching Image 3) */}
-            <div className="relative w-64 sm:w-72 md:w-80 h-[480px] sm:h-[530px] md:h-[570px] rounded-[32px] overflow-hidden border-2 border-white/95 bg-gradient-to-b from-white via-[#FCFBF8] to-[#F5F2EC] shadow-[0_25px_60px_rgba(0,0,0,0.65),0_0_40px_rgba(212,175,55,0.4)] flex flex-col items-center justify-between p-2">
-              {/* Subtle Golden Energy Aura Behind Aksara */}
-              <div
-                className={`absolute inset-0 transition-opacity duration-700 pointer-events-none bg-gradient-to-t ${activeStation.auraColor} ${
-                  isSpeaking ? 'opacity-100' : 'opacity-30'
-                }`}
-              />
-
-              {/* Floating Golden Sparks / Light Flecks */}
-              <div className="absolute top-1/4 left-1/4 w-2.5 h-2.5 rounded-full bg-amber-400/70 blur-[1px] animate-ping pointer-events-none" />
-              <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-300/60 blur-[2px] animate-pulse pointer-events-none" />
-              <div className="absolute bottom-1/4 right-1/3 w-2 h-2 rounded-full bg-amber-300/50 blur-[1px] animate-ping pointer-events-none" />
-
-              {/* Full Body Character Image of Aksara (Full height including magic circle on floor and shoes) */}
-              <img
-                src={PROSEDURIA_ASSETS.aksaraMascot}
-                alt="Aksara Panduan Penjelajah"
-                className={`w-full h-full object-contain object-center transition-transform duration-500 select-none ${
-                  isSpeaking ? 'scale-[1.03] filter brightness-105' : 'group-hover:scale-[1.02]'
-                }`}
-                referrerPolicy="no-referrer"
-              />
-
-              {/* Top-Right: Floating Voice Interaction Pill */}
-              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-slate-900/80 hover:bg-slate-950 border border-[#D4AF37] text-[9px] font-mono font-bold text-[#FFE082] flex items-center gap-1 shadow-lg backdrop-blur-md transition-all z-10">
-                <Volume2 className={`w-3 h-3 ${isSpeaking ? 'text-rose-400 animate-ping' : 'text-amber-300'}`} />
-                <span>{isSpeaking ? 'BERBICARA...' : 'KLIK BICARA'}</span>
-              </div>
-            </div>
-
-            {/* Bottom Identity Badge (Under the Card, never obstructing character's feet) */}
-            <div className="mt-2.5 px-4 py-1.5 rounded-2xl bg-[#061220]/95 border border-[#D4AF37]/80 shadow-xl text-center backdrop-blur-md w-full max-w-xs">
-              <div className="font-['Cinzel'] font-bold text-[#FFE082] text-xs sm:text-sm tracking-widest leading-tight">
-                AKSARA • PEMANDU PENJELAJAH
-              </div>
-              <div className="text-[10px] text-cyan-300 font-mono mt-0.5 leading-tight">
-                Siswa SMP Kelas IX • Ahli Teks Prosedur
-              </div>
-            </div>
+            <AksaraVideoPlayer
+              onOpenCharacterSheet={() => setIsCharacterSheetOpen(true)}
+              highestReachedStageIndex={highestReachedStageIndex}
+            />
           </div>
 
           {/* C. DYNAMIC POSITION INDICATOR & QUICK ACCESS */}
@@ -537,6 +500,12 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
           </div>
         </div>
       )}
+
+      {/* MODAL: OFFICIAL CHARACTER SHEET OF AKSARA */}
+      <AksaraCharacterSheetModal
+        isOpen={isCharacterSheetOpen}
+        onClose={() => setIsCharacterSheetOpen(false)}
+      />
     </div>
   );
 };

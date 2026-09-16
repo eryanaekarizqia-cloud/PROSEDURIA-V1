@@ -15,26 +15,32 @@ import {
   Share2,
   ShieldCheck,
   BookOpen,
+  Flame,
+  ArrowRight,
 } from 'lucide-react';
 import { MissionGuideBox } from '../ui/MissionGuideBox';
+import { WorldRestorationSlider } from '../restoration/WorldRestorationSlider';
 
 interface MasteryDebriefStageProps {
   onBackToMap: () => void;
   onRestartLoop: () => void;
+  onEnterProcedureForge?: () => void;
 }
 
 export const MasteryDebriefStage: React.FC<MasteryDebriefStageProps> = ({
   onBackToMap,
   onRestartLoop,
+  onEnterProcedureForge,
 }) => {
   const [reflectionAnswer, setReflectionAnswer] = useState<string>(
     'Saya belajar bahwa teks prosedur harus memiliki kalimat imperatif yang jelas, urutan temporal yang kronologis, dan takaran yang presisi agar instruksi tidak membahayakan atau membingungkan pembaca.'
   );
   const [copiedCert, setCopiedCert] = useState(false);
+  const [showRestorationModal, setShowRestorationModal] = useState(false);
 
   const handleCopySummary = () => {
     soundFX.playChime('gold');
-    const summary = `=== SERTIFIKAT KELULUSAN CHRONO-AKSARA ===\nPenyelaras Sintaksis Teks Prosedur Abad 22\nStatus: LULUS DENGAN PREDIKAT MAESTRO (100% C1-C6)\nKompetensi: Mengingat, Memahami, Menerapkan, Menganalisis, Mengevaluasi, dan Mencipta Teks Prosedur.\nRefleksi: "${reflectionAnswer}"`;
+    const summary = `=== SERTIFIKAT KELULUSAN CHRONO-AKSARA ===\nPenyelaras Sintaksis Teks Prosedur Abad 22\nStatus: LULUS DENGAN PREDIKAT MAESTRO (KOMPETENSI LENGKAP)\nKompetensi: Mengingat Struktur, Memahami Kaidah, Menerapkan Kronologis, Menganalisis Kerancuan, Mengevaluasi Perbaikan, dan Mencipta Prosedur Mandiri.\nRefleksi: "${reflectionAnswer}"`;
     navigator.clipboard.writeText(summary);
     setCopiedCert(true);
     setTimeout(() => setCopiedCert(false), 2000);
@@ -49,7 +55,7 @@ export const MasteryDebriefStage: React.FC<MasteryDebriefStageProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              TAHAP 12 // EVALUASI AKHIR & REFLEKSI
+              TAHAP 11 // EVALUASI AKHIR & REFLEKSI
             </span>
             <span className="text-xs font-mono text-cyan-400">Purna Misi Ekspedisi</span>
           </div>
@@ -60,17 +66,30 @@ export const MasteryDebriefStage: React.FC<MasteryDebriefStageProps> = ({
 
         <div className="flex items-center gap-2">
           <button
+            onClick={() => {
+              soundFX.playChime('victory');
+              setShowRestorationModal(true);
+            }}
+            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-emerald-500/20 hover:from-amber-500/30 hover:to-emerald-500/30 border border-emerald-400/40 text-emerald-300 font-mono text-xs flex items-center gap-1.5 shadow cursor-pointer transition-all"
+            title="Bandingkan kondisi dunia terdistorsi vs pulih"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span className="hidden sm:inline">Pemulihan Benua (World Restoration)</span>
+            <span className="sm:hidden">Restorasi</span>
+          </button>
+
+          <button
             onClick={handleCopySummary}
             className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-cyan-300 flex items-center gap-1.5 cursor-pointer"
           >
             <Share2 className="w-3.5 h-3.5" />
-            <span>{copiedCert ? 'Disalin ke Clipboard!' : 'Bagikan Capaian'}</span>
+            <span>{copiedCert ? 'Disalin!' : 'Bagikan'}</span>
           </button>
         </div>
       </div>
 
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="mastery_debrief" className="mb-3" />
+      <MissionGuideBox stageKey="mastery_debrief" mood="proud" className="mb-3" />
 
       {/* Main Grid: Certificate & Self-Assessment Rubric */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-5 flex-1 my-2">
@@ -104,8 +123,8 @@ export const MasteryDebriefStage: React.FC<MasteryDebriefStageProps> = ({
                 <span className="text-emerald-400 font-bold">Istimewa (A+)</span>
               </div>
               <div className="p-2 rounded-lg bg-white/5 border border-white/5">
-                <span className="text-slate-400 block">Status Bloom:</span>
-                <span className="text-cyan-300 font-bold">C1 - C6 Kuasai</span>
+                <span className="text-slate-400 block">Status Capaian:</span>
+                <span className="text-cyan-300 font-bold">Semua Level Tuntas</span>
               </div>
               <div className="p-2 rounded-lg bg-white/5 border border-white/5">
                 <span className="text-slate-400 block">Validasi AI:</span>
@@ -125,17 +144,17 @@ export const MasteryDebriefStage: React.FC<MasteryDebriefStageProps> = ({
           <div className="space-y-3">
             <h3 className="font-['Cinzel'] font-bold text-white text-base flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              Rubrik Taksonomi Bloom (Tuntas 100%)
+              Tingkat Kemahiran Penjelajah (Tuntas 100%)
             </h3>
 
             <div className="space-y-2">
               {[
-                { tag: 'C1', name: 'Mengingat', detail: 'Mengidentifikasi 4 pilar struktur teks prosedur' },
-                { tag: 'C2', name: 'Memahami', detail: 'Memahami kaidah kalimat imperatif dan konjungsi' },
-                { tag: 'C3', name: 'Menerapkan', detail: 'Menyusun urutan instruksi acak (Sequence Puzzle)' },
-                { tag: 'C4', name: 'Menganalisis', detail: 'Mendeteksi glitch dan menghubungkan di Papan Bukti' },
-                { tag: 'C5', name: 'Mengevaluasi', detail: 'Menyunting kalimat baku dan simulasi operasional' },
-                { tag: 'C6', name: 'Mencipta', detail: 'Merumuskan prosedur orisinal di Procedure Forge' },
+                { tag: 'L1', name: 'Mengingat Struktur', detail: 'Mengidentifikasi 4 pilar struktur teks prosedur' },
+                { tag: 'L2', name: 'Memahami Kaidah', detail: 'Memahami kaidah kalimat imperatif dan konjungsi' },
+                { tag: 'L3', name: 'Menerapkan Urutan', detail: 'Menyusun urutan instruksi acak (Urutan Logis)' },
+                { tag: 'L4', name: 'Menganalisis Kerancuan', detail: 'Mendeteksi kerancuan dan menghubungkan di Papan Bukti' },
+                { tag: 'L5', name: 'Mengevaluasi & Perbaiki', detail: 'Menyunting kalimat baku dan simulasi operasional' },
+                { tag: 'L6', name: 'Mencipta Mandiri', detail: 'Merumuskan prosedur orisinal di Tungku Cipta' },
               ].map((r) => (
                 <div key={r.tag} className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
@@ -169,28 +188,71 @@ export const MasteryDebriefStage: React.FC<MasteryDebriefStageProps> = ({
       </div>
 
       {/* Footer Navigation */}
-      <div className="relative z-10 pt-4 flex items-center justify-between border-t border-white/10">
-        <button
-          onClick={() => {
-            soundFX.playChime('cyan');
-            onBackToMap();
-          }}
-          className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-colors flex items-center gap-2 cursor-pointer"
-        >
-          <Compass className="w-4 h-4" />
-          <span>Kembali ke Peta Dunia</span>
-        </button>
-        <button
-          onClick={() => {
-            soundFX.playChime('gold');
-            onRestartLoop();
-          }}
-          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#0284C7] hover:from-[#38BDF8] hover:to-[#0284C7] text-[#08131F] font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(0,242,254,0.4)] flex items-center gap-2 cursor-pointer active:scale-95"
-        >
-          <RotateCcw className="w-4 h-4 text-[#08131F]" />
-          <span>Ulangi Ekspedisi dari Awal (Restart Loop)</span>
-        </button>
+      <div className="relative z-10 pt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/10">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              soundFX.playChime('cyan');
+              onBackToMap();
+            }}
+            className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-colors flex items-center gap-2 cursor-pointer"
+          >
+            <Compass className="w-4 h-4" />
+            <span>Peta Benua</span>
+          </button>
+          <button
+            onClick={() => {
+              soundFX.playChime('click');
+              onRestartLoop();
+            }}
+            className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-slate-200 text-xs font-mono transition-colors flex items-center gap-1.5 cursor-pointer"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Ulangi Siklus</span>
+          </button>
+        </div>
+
+        {onEnterProcedureForge && (
+          <button
+            onClick={() => {
+              soundFX.playChime('victory');
+              onEnterProcedureForge();
+            }}
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_25px_rgba(236,72,153,0.5)] flex items-center gap-2 cursor-pointer active:scale-95"
+          >
+            <Flame className="w-4 h-4 text-amber-200" />
+            <span>Masuk ke Tungku Cipta Prosedur</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        )}
       </div>
+
+      {/* MODAL: WORLD RESTORATION DIALOG */}
+      {showRestorationModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-[#08182B] border-2 border-[#D4AF37] p-6 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold font-['Cinzel'] text-[#FFE082] flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-cyan-400" />
+                Simulasi Pemulihan Benua Nusantara
+              </h3>
+              <button
+                onClick={() => setShowRestorationModal(false)}
+                className="px-3 py-1 rounded-lg bg-[#0D2B45] text-slate-300 hover:text-white border border-[#D4AF37]/30 text-xs font-mono cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+            <WorldRestorationSlider
+              compact={false}
+              onContinue={() => {
+                setShowRestorationModal(false);
+                if (onEnterProcedureForge) onEnterProcedureForge();
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

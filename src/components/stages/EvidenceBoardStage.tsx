@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { soundFX } from '../../utils/audioEffects';
+import { gameStateManager } from '../../utils/gameStateManager';
 import {
   ArrowLeft,
   ChevronRight,
@@ -57,6 +58,21 @@ const CORRECT_MATCHES: { [key: string]: string } = {
   E4: 'R4',
 };
 
+const MISMATCH_EXPLANATIONS: { [key: string]: string } = {
+  'E1-R2': 'Bukti E1 bermasalah pada takaran cairan ("secukupnya sesuka hati"), bukan ketiadaan kalimat imperatif ("Tuangkan"). Hubungkan dengan kaidah ukuran kuantitatif!',
+  'E1-R3': 'Bukti E1 tidak memuat urutan konjungsi waktu yang terbalik, melainkan takaran material yang tidak terukur.',
+  'E1-R4': 'Bukti E1 membahas cairan pelarut yang tidak ditakar, bukan suhu pemanasan atau durasi menit.',
+  'E2-R1': 'Bukti E2 menyoroti gaya tutur yang ragu-ragu ("barangkali bisa mempertimbangkan"), bukan besaran takaran mililiter.',
+  'E2-R3': 'Bukti E2 tidak memiliki masalah pada urutan konjungsi waktu, melainkan kelemahan verba perintah instruksional.',
+  'E2-R4': 'Bukti E2 mempersoalkan instruksi memutar tuas yang tidak tegas, bukan besaran termal atau waktu pemanasan.',
+  'E3-R1': 'Bukti E3 menempatkan "Setelah selesai" sebelum "pertama-tama". Ini adalah kekacauan alur waktu, bukan takaran mililiter.',
+  'E3-R2': 'Bukti E3 sudah menggunakan kalimat perintah "pasanglah", tetapi urutan konjungsi sebab-akibatnya terbalik berbahaya!',
+  'E3-R4': 'Bukti E3 tidak membahas suhu atau menit, melainkan urutan keselamatan kronologis yang terbalik.',
+  'E4-R1': 'Bukti E4 mempersoalkan kondisi suhu subjektif ("agak hangat dan nyaman"), bukan takaran volume cairan.',
+  'E4-R2': 'Bukti E4 sudah memakai verba "Panaskan", namun deskripsi suhunya tidak menggunakan angka kuantitatif Celcius terukur.',
+  'E4-R3': 'Bukti E4 tidak bermasalah pada konjungsi urutan, melainkan pada ketiadaan angka derajat Celcius objektif.',
+};
+
 export const EvidenceBoardStage: React.FC<EvidenceBoardStageProps> = ({
   onNext,
   onBack,
@@ -86,10 +102,14 @@ export const EvidenceBoardStage: React.FC<EvidenceBoardStageProps> = ({
       setFeedback('Pencocokan Tepat! Bukti kesalahan berhasil dihubungkan dengan kaidah ilmiah.');
       if (Object.keys(updated).length === INITIAL_EVIDENCES.length) {
         setTimeout(() => soundFX.playChime('victory'), 200);
+        gameStateManager.unlockBadge('pengumpul_bukti');
+        gameStateManager.save({ evidenceCompleted: true });
       }
     } else {
       soundFX.playChime('error');
-      setFeedback('Kaidah tidak sesuai dengan bukti ini! Analisis kembali jenis kesalahannya.');
+      const mismatchKey = `${selectedEvidence}-${ruleId}`;
+      const reason = MISMATCH_EXPLANATIONS[mismatchKey] || 'Kaidah tidak sesuai dengan bukti ini! Analisis kembali jenis kesalahannya.';
+      setFeedback(`Koreksi: ${reason}`);
     }
   };
 
@@ -122,7 +142,7 @@ export const EvidenceBoardStage: React.FC<EvidenceBoardStageProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                TAHAP 7 // C4 FORENSIK BUKTI
+                MISI 7 // PENGHUBUNG BUKTI KAIDAH
               </span>
               <span className="text-xs font-mono text-cyan-400">Papan Korelasi Kaidah</span>
             </div>
@@ -147,14 +167,18 @@ export const EvidenceBoardStage: React.FC<EvidenceBoardStageProps> = ({
       <StoryboardProgressHUD currentStep={3} className="mb-3" />
 
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="evidence_board" className="mb-3" />
+      <MissionGuideBox
+        stageKey="evidence_board"
+        mood={isCompleted ? 'proud' : (Object.keys(matches).length > 0 ? 'encouraging' : 'curious')}
+        className="mb-3"
+      />
 
       {/* Evidence Board Pipeline (Directly from Image 2: Evidence Board Flow) */}
       <div className="relative z-10 mb-3 p-3 rounded-2xl bg-gradient-to-r from-[#0C2442] via-[#0E2E55] to-[#0C2442] border-2 border-indigo-400/60 shadow-lg">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <span className="text-xs font-mono font-bold text-indigo-300 flex items-center gap-1.5">
             <Link className="w-4 h-4 text-cyan-400" />
-            <span>EVIDENCE BOARD: ALUR KORELASI LOGIKA</span>
+            <span>PAPAN BUKTI: ALUR KORELASI LOGIKA</span>
           </span>
           <span className="text-[11px] font-mono text-cyan-200">
             Terhubung: {Object.keys(matches).length} / {INITIAL_EVIDENCES.length} Bukti
@@ -287,7 +311,7 @@ export const EvidenceBoardStage: React.FC<EvidenceBoardStageProps> = ({
           }}
           className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-colors"
         >
-          Kembali ke Deteksi Glitch
+          Kembali ke Deteksi Kerancuan
         </button>
         <button
           disabled={!isCompleted}

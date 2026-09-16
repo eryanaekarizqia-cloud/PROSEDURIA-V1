@@ -87,7 +87,7 @@ export const Mission01BriefingStage: React.FC<Mission01BriefingStageProps> = ({
       <StoryboardProgressHUD currentStep={2} className="mb-3" />
 
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="mission_01" className="mb-3" />
+      <MissionGuideBox stageKey="mission_01" mood="concerned" className="mb-3" />
 
       {/* Main Dossier Grid */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-5 flex-1 my-2">
@@ -146,8 +146,8 @@ export const Mission01BriefingStage: React.FC<Mission01BriefingStageProps> = ({
               <Cpu className="w-5 h-5 animate-spin-slow" />
             </div>
             <div className="text-xs">
-              <span className="text-[#00F2FE] font-mono font-bold block">INSTRUKSI ARUNA AI:</span>
-              "Penyelaras Sintaksis, kami memerlukan Anda untuk mengurutkan kembali langkah-langkah kerja pada tahap berikutnya (Sequence Puzzle) sebelum reaktor meledak!"
+              <span className="text-[#00F2FE] font-mono font-bold block">INSTRUKSI PUSAT LOGIKA:</span>
+              "Penyelaras Bahasa, kami membutuhkan bantuanmu untuk mengurutkan kembali langkah-langkah kerja pada tahap berikutnya (Urutan Logis) sebelum reaktor mengalami kegagalan!"
             </div>
           </div>
         </div>
@@ -161,11 +161,11 @@ export const Mission01BriefingStage: React.FC<Mission01BriefingStageProps> = ({
             </h3>
             <div className="space-y-2.5">
               {[
-                { title: 'Fase 1: Sequence Puzzle', desc: 'Susun 5 langkah yang acak sesuai logika kronologis', stage: 'Tahap 5' },
-                { title: 'Fase 2: Procedure Glitch', desc: 'Identifikasi 4 titik kerancuan bahasa & takaran', stage: 'Tahap 6' },
-                { title: 'Fase 3: Evidence Board', desc: 'Kaitkan temuan kesalahan dengan kaidah kebahasaan', stage: 'Tahap 7' },
-                { title: 'Fase 4: Repair Workshop', desc: 'Sunting menjadi kalimat imperatif baku', stage: 'Tahap 8' },
-                { title: 'Fase 5: Test Simulation', desc: 'Uji kestabilan mesin reaktor bioplasma', stage: 'Tahap 9' },
+                { title: 'Fase 1: Urutan Logis', desc: 'Susun 5 langkah yang acak sesuai logika kronologis', stage: 'Tahap 5' },
+                { title: 'Fase 2: Deteksi Kerancuan', desc: 'Identifikasi 4 titik kerancuan bahasa & takaran', stage: 'Tahap 6' },
+                { title: 'Fase 3: Papan Bukti', desc: 'Kaitkan temuan kesalahan dengan kaidah kebahasaan', stage: 'Tahap 7' },
+                { title: 'Fase 4: Bengkel Rekonstruksi', desc: 'Sunting menjadi kalimat imperatif baku', stage: 'Tahap 8' },
+                { title: 'Fase 5: Uji Simulasi', desc: 'Uji kestabilan mesin reaktor bioplasma', stage: 'Tahap 9' },
               ].map((step, idx) => (
                 <div key={idx} className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-cyan-400/20 text-[#00F2FE] font-mono text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
@@ -208,7 +208,7 @@ export const Mission01BriefingStage: React.FC<Mission01BriefingStageProps> = ({
           }}
           className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#0284C7] hover:from-[#38BDF8] hover:to-[#0284C7] text-[#08131F] font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(0,242,254,0.4)] flex items-center gap-2 cursor-pointer active:scale-95"
         >
-          <span>Terima Misi: Buka Sequence Puzzle</span>
+          <span>Terima Misi: Mulai Urutan Logis</span>
           <ChevronRight className="w-4 h-4 text-[#08131F]" />
         </button>
       </div>

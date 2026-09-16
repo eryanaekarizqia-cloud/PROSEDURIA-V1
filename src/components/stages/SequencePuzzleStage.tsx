@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { soundFX } from '../../utils/audioEffects';
+import { gameStateManager } from '../../utils/gameStateManager';
 import {
   ArrowLeft,
   ChevronRight,
@@ -16,6 +17,7 @@ import {
   Sparkles,
   Layers,
   HelpCircle,
+  Clock,
 } from 'lucide-react';
 import { MissionGuideBox } from '../ui/MissionGuideBox';
 import { StoryboardProgressHUD } from '../ui/StoryboardProgressHUD';
@@ -26,8 +28,10 @@ interface SequencePuzzleStageProps {
 }
 
 interface StepItem {
-  id: number;
+  id: string;
+  cardLabel: string;
   correctOrder: number;
+  phaseName: string;
   conjunction: string;
   text: string;
   detail: string;
@@ -35,36 +39,46 @@ interface StepItem {
 
 const INITIAL_STEPS: StepItem[] = [
   {
-    id: 3,
+    id: 'STEP_GRIND',
+    cardLabel: 'Kartu Alpha',
     correctOrder: 3,
+    phaseName: 'Penghalusan Serbuk',
     conjunction: 'Kemudian',
     text: 'Haluskan rimpang kering menggunakan alat penggiling kuantum hingga menjadi serbuk 100 mesh.',
     detail: 'Menghaluskan rimpang kering sebelum dilarutkan.',
   },
   {
-    id: 1,
+    id: 'STEP_WASH',
+    cardLabel: 'Kartu Beta',
     correctOrder: 1,
+    phaseName: 'Pembersihan & Pengirisan',
     conjunction: 'Pertama-tama',
     text: 'Bersihkan rimpang temulawak segar dari kotoran tanah lalu iris tipis dengan ketebalan 2 mm.',
     detail: 'Pembersihan dan pengirisan adalah langkah awal mutlak.',
   },
   {
-    id: 5,
+    id: 'STEP_FILTER',
+    cardLabel: 'Kartu Gamma',
     correctOrder: 5,
+    phaseName: 'Penyaringan Akhir',
     conjunction: 'Akhirnya',
     text: 'Saring cairan ekstrak menggunakan filter membran mikro hingga diperoleh bioplasma murni.',
     detail: 'Penyaringan akhir sebelum hasil disimpan.',
   },
   {
-    id: 2,
+    id: 'STEP_DRY',
+    cardLabel: 'Kartu Delta',
     correctOrder: 2,
+    phaseName: 'Pengeringan Foton',
     conjunction: 'Setelah itu',
     text: 'Keringkan irisan temulawak di dalam ruang pengering foton bersuhu 45°C selama 15 menit.',
     detail: 'Pengeringan harus dilakukan setelah rimpang diiris.',
   },
   {
-    id: 4,
+    id: 'STEP_MIX',
+    cardLabel: 'Kartu Epsilon',
     correctOrder: 4,
+    phaseName: 'Pencampuran Pelarut',
     conjunction: 'Selanjutnya',
     text: 'Campurkan serbuk temulawak dengan 250 ml cairan pelarut murni di dalam tabung reaksi ultrasonik.',
     detail: 'Pencampuran dilakukan setelah serbuk halus tersedia.',
@@ -79,10 +93,12 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [hintVisible, setHintVisible] = useState<boolean>(false);
+  const [causalFeedback, setCausalFeedback] = useState<string | null>(null);
 
   const moveItem = (index: number, direction: 'UP' | 'DOWN') => {
     soundFX.playChime('click');
     setIsVerified(false);
+    setCausalFeedback(null);
     const targetIndex = direction === 'UP' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= items.length) return;
 
@@ -106,8 +122,39 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
 
     if (allCorrect) {
       soundFX.playChime('victory');
+      setCausalFeedback(null);
+      gameStateManager.unlockBadge('penalar_urutan');
+      gameStateManager.save({ sequencePuzzleSolved: true });
     } else {
       soundFX.playChime('error');
+      // Diagnose precise causality breakdown to reward reasoning
+      const washIdx = items.findIndex((it) => it.id === 'STEP_WASH');
+      const dryIdx = items.findIndex((it) => it.id === 'STEP_DRY');
+      const grindIdx = items.findIndex((it) => it.id === 'STEP_GRIND');
+      const mixIdx = items.findIndex((it) => it.id === 'STEP_MIX');
+      const filterIdx = items.findIndex((it) => it.id === 'STEP_FILTER');
+
+      if (washIdx !== 0) {
+        setCausalFeedback(
+          'Kegagalan Tahap Awal: Rimpang temulawak belum dicuci dan diiris tipis! Langkah pembersihan bahan mentah mutlak wajib dilakukan paling awal dengan konjungsi "Pertama-tama".'
+        );
+      } else if (grindIdx < dryIdx) {
+        setCausalFeedback(
+          'Anomali Sebab-Akibat: Rimpang basah belum dikeringkan tetapi sudah digiling! Irisan basah akan menggumpal liat dan merusak penggiling kuantum.'
+        );
+      } else if (mixIdx < grindIdx) {
+        setCausalFeedback(
+          'Urutan Bahan Belum Matang: Rimpang belum digiling menjadi serbuk halus 100 mesh! Potongan kasar tidak bisa larut homogen dalam cairan pelarut.'
+        );
+      } else if (filterIdx < mixIdx) {
+        setCausalFeedback(
+          'Hasil Belum Terbentuk: Penyaringan membran dilakukan sebelum serbuk dan cairan pelarut dicampurkan! Belum ada bioplasma yang terbentuk untuk disaring.'
+        );
+      } else {
+        setCausalFeedback(
+          'Periksa Penanda Waktu: Konjungsi temporal belum runtut. Ikuti alur logis: "Pertama-tama" → "Setelah itu" → "Kemudian" → "Selanjutnya" → "Akhirnya".'
+        );
+      }
     }
   };
 
@@ -116,6 +163,7 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
     setItems(INITIAL_STEPS);
     setIsVerified(false);
     setIsCorrect(false);
+    setCausalFeedback(null);
   };
 
   return (
@@ -138,7 +186,7 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-sky-400/20 text-[#38BDF8] border border-sky-400/30">
-                TAHAP 5 // C3 APPLYING
+                MISI 5 // PENYUSUNAN URUTAN LOGIS
               </span>
               <span className="text-xs font-mono text-slate-400">Puzzle Urutan Kronologis</span>
             </div>
@@ -171,7 +219,11 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
       <StoryboardProgressHUD currentStep={5} className="mb-3" />
 
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="sequence_puzzle" className="mb-3" />
+      <MissionGuideBox
+        stageKey="sequence_puzzle"
+        mood={isVerified ? (isCorrect ? 'proud' : 'concerned') : 'curious'}
+        className="mb-3"
+      />
 
       {/* Sequence Glitch Interactive Flow Banner (Inspired by Image 2) */}
       <div className="relative z-10 mb-3 p-3 rounded-2xl bg-gradient-to-r from-[#0C2F52] via-[#0E3D6B] to-[#0C2F52] border-2 border-amber-400/60 shadow-[0_6px_20px_rgba(0,0,0,0.5)]">
@@ -181,7 +233,7 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
             <span>TANTANGAN: SEQUENCE GLITCH (Urutan Langkah Tertukar)</span>
           </span>
           <span className="text-[11px] font-mono text-cyan-200">
-            Target: 1 ➔ 2 ➔ 3 ➔ 4 ➔ 5
+            Alur Logika: Pembersihan ➔ Pengeringan ➔ Penggilingan ➔ Pelarutan ➔ Penyaringan
           </span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto py-1">
@@ -196,7 +248,7 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
                     : 'bg-white/10 text-cyan-200 border-cyan-400/40'
                 }`}
               >
-                Pos {idx + 1}: Step #{it.id}
+                Pos {idx + 1}: {it.phaseName}
               </span>
               {idx < items.length - 1 && <span className="text-amber-400 font-bold">➔</span>}
             </div>
@@ -292,22 +344,27 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
 
       {/* Verification Feedback Bar */}
       <div className="relative z-10 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/10">
-        <div className="text-xs font-mono">
+        <div className="text-xs font-mono max-w-xl">
           {isVerified ? (
             isCorrect ? (
               <span className="text-emerald-400 font-bold flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" />
-                Urutan Sempurna! Seluruh langkah telah tersusun secara logis & kronologis.
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                Urutan Sempurna! Seluruh langkah telah tersusun secara logis & kronologis sesuai kaidah sebab-akibat. Lencana Penalar Urutan terbuka!
               </span>
             ) : (
-              <span className="text-rose-400 font-bold flex items-center gap-1.5">
-                <AlertCircle className="w-4 h-4" />
-                Masih ada langkah yang tertukar. Periksa urutan konjungsi & logika tindakan!
-              </span>
+              <div className="p-2.5 rounded-xl bg-rose-950/60 border border-rose-500/50 text-rose-300">
+                <div className="font-bold flex items-center gap-1.5 mb-1 text-rose-200">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                  Konsekuensi Kesalahan Urutan Terdeteksi:
+                </div>
+                <div className="text-[11px] leading-relaxed text-rose-100">
+                  {causalFeedback || 'Masih ada langkah yang tertukar. Periksa urutan konjungsi & kausalitas tindakan!'}
+                </div>
+              </div>
             )
           ) : (
             <span className="text-slate-400">
-              Susun langkah 1 sampai 5 lalu klik "Verifikasi Urutan".
+              Pindahkan posisi langkah hingga runtut secara kronologis, lalu klik "Verifikasi Urutan".
             </span>
           )}
         </div>
@@ -328,7 +385,7 @@ export const SequencePuzzleStage: React.FC<SequencePuzzleStageProps> = ({
               }}
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2 cursor-pointer active:scale-95"
             >
-              <span>Lanjut ke Deteksi Glitch (Tahap 6)</span>
+              <span>Lanjut ke Deteksi Kerancuan (Tahap 6)</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           )}

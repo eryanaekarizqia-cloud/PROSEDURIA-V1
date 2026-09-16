@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { soundFX } from '../../utils/audioEffects';
-import { PROSEDURIA_ASSETS } from '../../assets/proseduriaAssets';
+import { AksaraCharacterVisual } from '../character/AksaraCharacterVisual';
 import {
   X,
   Compass,
@@ -64,14 +64,14 @@ export const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ isOpen, 
         <div className="p-6 overflow-y-auto space-y-6">
           {/* Top Hero Section: Image + Bio Sheet */}
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 p-4 rounded-2xl bg-[#08182B]/80 border border-[#D4AF37]/40">
-            {/* Mascot Image */}
+            {/* Mascot Vector Art */}
             <div className="sm:col-span-4 flex flex-col items-center">
-              <div className="relative w-full h-64 rounded-xl overflow-hidden border-2 border-[#D4AF37] shadow-lg bg-gradient-to-b from-[#FDFCFA] via-[#FAF8F5] to-[#F1EFEA]">
-                <img
-                  src={PROSEDURIA_ASSETS.aksaraMascot}
-                  alt="Aksara Panduan Penjelajah"
-                  className="w-full h-full object-contain object-bottom"
-                  referrerPolicy="no-referrer"
+              <div className="relative w-full h-64 rounded-xl overflow-hidden border-2 border-[#D4AF37] shadow-lg bg-gradient-to-b from-[#0F2942] via-[#0A1A2C] to-[#061220] flex items-center justify-center p-2">
+                <AksaraCharacterVisual
+                  expression="SENANG"
+                  pose="standing_compass"
+                  size={190}
+                  compassGlowing={true}
                 />
                 <div className="absolute bottom-2 inset-x-2 px-2 py-1 rounded bg-[#061220]/90 text-[10px] font-mono text-center text-[#FFE082] border border-[#D4AF37]/40 backdrop-blur-sm">
                   PEMANDU RESMI PROSEDURIA
@@ -91,7 +91,7 @@ export const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ isOpen, 
                 <p className="text-xs text-cyan-200 mt-1 leading-relaxed">
                   Aksara adalah pemandu setia di dunia Proseduria. Dengan kecerdasan, ketelitian, dan penguasaan
                   struktur teks prosedur, Aksara membimbing para Penjelajah Logika untuk menganalisis, memperbaiki,
-                  dan memulihkan kestabilan dunia dari ancaman <strong className="text-rose-400">Procedure Glitch</strong>.
+                  dan memulihkan kestabilan dunia dari ancaman <strong className="text-rose-400">Kerancuan Prosedur</strong>.
                 </p>
               </div>
 
@@ -147,16 +147,16 @@ export const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ isOpen, 
               <div className="p-3 rounded-xl bg-[#08182B] border border-white/10 flex items-center gap-3">
                 <Book className="w-5 h-5 text-emerald-400 shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-white">Magic Logbook</div>
-                  <div className="text-[10px] text-slate-400">Arsip kode & aturan</div>
+                  <div className="text-xs font-bold text-white">Buku Catatan Logika</div>
+                  <div className="text-[10px] text-slate-400">Arsip aturan & pedoman</div>
                 </div>
               </div>
 
               <div className="p-3 rounded-xl bg-[#08182B] border border-white/10 flex items-center gap-3">
                 <Radio className="w-5 h-5 text-purple-400 shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-white">Transmitor Panduan</div>
-                  <div className="text-[10px] text-slate-400">Komunikasi real-time</div>
+                  <div className="text-xs font-bold text-white">Pemancar Panduan</div>
+                  <div className="text-[10px] text-slate-400">Komunikasi seketika</div>
                 </div>
               </div>
             </div>
@@ -193,11 +193,11 @@ export const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ isOpen, 
               <span>Panduan Aksara di 5 Zona Proseduria:</span>
             </div>
             <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
-              <li><strong className="text-white">Lembah Informasi (C1-C2):</strong> Memandu mengenali tujuan, alat/bahan, dan struktur lengkap teks prosedur.</li>
-              <li><strong className="text-white">Taman Bahasa (C2-C3):</strong> Membimbing penggunaan kalimat imperatif tegas, konjungsi temporal, dan takaran akurat.</li>
-              <li><strong className="text-white">Sungai Logika (C3):</strong> Menuntun penyusunan urutan langkah kronologis yang tepat dan runtut.</li>
-              <li><strong className="text-white">Kawasan Prosedur Rusak (C4-C5):</strong> Membantu mendiagnosis glitch dan merekonstruksi prosedur rusak.</li>
-              <li><strong className="text-white">Procedure Forge (C6):</strong> Mendampingi merancang dan menyempurnakan prosedur orisinalmu sendiri.</li>
+              <li><strong className="text-white">Lembah Informasi (Zona Inisiasi):</strong> Memandu mengenali tujuan, alat/bahan, dan struktur lengkap teks prosedur.</li>
+              <li><strong className="text-white">Taman Bahasa (Zona Kaidah):</strong> Membimbing penggunaan kalimat imperatif tegas, konjungsi temporal, dan takaran akurat.</li>
+              <li><strong className="text-white">Sungai Logika (Zona Rangkaian):</strong> Menuntun penyusunan urutan langkah kronologis yang tepat dan runtut.</li>
+              <li><strong className="text-white">Kawasan Prosedur Rusak (Zona Rekonstruksi):</strong> Membantu mendiagnosis anomali kerancuan dan merekonstruksi prosedur rusak.</li>
+              <li><strong className="text-white">Tungku Cipta Prosedur (Zona Kreasi Pusaka):</strong> Mendampingi merancang dan menyempurnakan teks prosedur orisinalmu sendiri.</li>
             </ul>
           </div>
         </div>

@@ -65,7 +65,7 @@ export const EmbarkationModal: React.FC<EmbarkationModalProps> = ({
           <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/40 flex items-start gap-3">
             <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
             <div className="text-xs text-rose-200">
-              <strong className="block text-rose-300 font-mono mb-0.5">PERINGATAN PROCEDURE GLITCH!</strong>
+              <strong className="block text-rose-300 font-mono mb-0.5">PERINGATAN ANOMALI KERANCUAN PROSEDUR!</strong>
               Dunia Proseduria terdistorsi karena langkah yang salah, urutan acak, kalimat ambigu, dan informasi hilang.
               Kestabilan energi bioplasma reaktor bergantung pada ketelitian analisis bahasamu.
             </div>
@@ -81,7 +81,7 @@ export const EmbarkationModal: React.FC<EmbarkationModalProps> = ({
                   1
                 </span>
                 <p className="text-xs text-slate-200">
-                  <strong className="text-white">Amati & Temukan Informasi (C1-C2):</strong> Jelajahi Lembah Informasi,
+                  <strong className="text-white">Amati & Temukan Informasi:</strong> Jelajahi Lembah Informasi,
                   identifikasi struktur 4 bagian teks (Tujuan, Alat/Bahan, Langkah, Penutup).
                 </p>
               </div>
@@ -91,7 +91,7 @@ export const EmbarkationModal: React.FC<EmbarkationModalProps> = ({
                   2
                 </span>
                 <p className="text-xs text-slate-200">
-                  <strong className="text-white">Analisis & Perbaiki Glitch (C3-C5):</strong> Susun puzzle kronologis, ubah
+                  <strong className="text-white">Analisis & Perbaiki Kerancuan:</strong> Susun alur urutan logis, ubah
                   kalimat pasif menjadi kalimat perintah imperatif aktif, dan rekonstruksi teks rusak di papan bukti.
                 </p>
               </div>
@@ -101,8 +101,8 @@ export const EmbarkationModal: React.FC<EmbarkationModalProps> = ({
                   3
                 </span>
                 <p className="text-xs text-slate-200">
-                  <strong className="text-white">Rancang & Buktikan (C6):</strong> Ciptakan teks prosedur orisinalmu di
-                  Procedure Forge, raih 6 lencana kehormatan, dan piala Master Penjelajah Logika!
+                  <strong className="text-white">Rancang & Buktikan Kemahiran:</strong> Ciptakan teks prosedur orisinalmu di
+                  Tungku Cipta Prosedur, raih 6 lencana kehormatan, dan piala Maestro Penjelajah Logika!
                 </p>
               </div>
             </div>

@@ -18,7 +18,7 @@ export const BADGE_LIST = [
     id: 'pengumpul_bukti',
     name: 'Pengumpul Bukti',
     desc: 'Mengumpulkan dan mengidentifikasi anomali data teks prosedur.',
-    tier: 'Bronze Star Shield',
+    tier: 'Perisai Bintang Perunggu',
     color: 'from-amber-600 to-amber-800',
     icon: '🔍',
   },
@@ -26,7 +26,7 @@ export const BADGE_LIST = [
     id: 'penalar_urutan',
     name: 'Penalar Urutan',
     desc: 'Menata ulang langkah acak berdasarkan logika sebab-akibat & konjungsi temporal.',
-    tier: 'Silver Star Crest',
+    tier: 'Lambang Bintang Perak',
     color: 'from-emerald-600 to-teal-800',
     icon: '⭐',
   },
@@ -34,15 +34,15 @@ export const BADGE_LIST = [
     id: 'ahli_bahasa',
     name: 'Ahli Bahasa',
     desc: 'Memperbaiki instruksi kabur & kalimat pasif menjadi kalimat imperatif tegas.',
-    tier: 'Blue Crest (S)',
+    tier: 'Lambang Biru Kelas S',
     color: 'from-blue-600 to-indigo-800',
     icon: '💠',
   },
   {
     id: 'detektif_glitch',
-    name: 'Detektif Glitch',
+    name: 'Detektif Kerancuan',
     desc: 'Mendiagnosis 4 pilar kerusakan: Informasi, Urutan, Bahasa, dan Hasil.',
-    tier: 'Gear Shield',
+    tier: 'Perisai Roda Gigi',
     color: 'from-purple-600 to-violet-800',
     icon: '⚙️',
   },
@@ -50,15 +50,15 @@ export const BADGE_LIST = [
     id: 'insinyur_perbaikan',
     name: 'Insinyur Perbaikan',
     desc: 'Merekonstruksi protokol reaktor bioplasma dengan presisi kuantitatif.',
-    tier: 'Crossed Wrench Crest',
+    tier: 'Lambang Kunci Silang',
     color: 'from-cyan-600 to-blue-800',
     icon: '🛠️',
   },
   {
     id: 'master_penjelajah_logika',
-    name: 'Master Penjelajah Logika',
+    name: 'Penjelajah Logika Utama',
     desc: 'Menyelesaikan seluruh kurikulum fase D dan menyelamatkan Akademi Proseduria.',
-    tier: 'S-Rank Royal Trophy',
+    tier: 'Piala Kerajaan Peringkat S',
     color: 'from-yellow-500 to-amber-700',
     icon: '🏆',
   },
@@ -158,12 +158,12 @@ export const BadgeCollectionModal: React.FC<BadgeCollectionModalProps> = ({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-slate-300">
             <div className="p-3 rounded-xl bg-[#0A1F33] border border-white/5">
-              <span className="font-bold text-[#FFE082] block mb-1">1. Game Score</span>
-              <p className="text-[11px] text-slate-300">Waktu penyelesaian, efisiensi langkah, jumlah retry, dan kelengkapan bukti.</p>
+              <span className="font-bold text-[#FFE082] block mb-1">1. Skor Permainan</span>
+              <p className="text-[11px] text-slate-300">Waktu penyelesaian, efisiensi langkah, jumlah percobaan ulang, dan kelengkapan bukti.</p>
             </div>
             <div className="p-3 rounded-xl bg-[#0A1F33] border border-white/5">
-              <span className="font-bold text-cyan-300 block mb-1">2. Learning Evidence</span>
-              <p className="text-[11px] text-slate-300">Menemukan informasi, menghubungkan sebab-akibat, mendiagnosis error teks, dan merancang teks.</p>
+              <span className="font-bold text-cyan-300 block mb-1">2. Bukti Pembelajaran</span>
+              <p className="text-[11px] text-slate-300">Menemukan informasi, menghubungkan sebab-akibat, mendiagnosis kesalahan teks, dan merancang teks.</p>
             </div>
             <div className="p-3 rounded-xl bg-[#0A1F33] border border-white/5">
               <span className="font-bold text-emerald-300 block mb-1">3. Tingkat Penguasaan</span>

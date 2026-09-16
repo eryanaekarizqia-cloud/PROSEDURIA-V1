@@ -112,7 +112,7 @@ export const LembahInformasiStage: React.FC<LembahInformasiStageProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-400/20 text-[#00F2FE] border border-cyan-400/30">
-                TAHAP 3 // C1 & C2
+                POS 1 // FONDASI INFORMASI
               </span>
               <span className="text-xs font-mono text-slate-400">Zona Lembah Informasi</span>
             </div>
@@ -148,20 +148,24 @@ export const LembahInformasiStage: React.FC<LembahInformasiStageProps> = ({
       </div>
 
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="lembah_informasi" className="mb-3" />
+      <MissionGuideBox
+        stageKey="lembah_informasi"
+        mood={quizSubmitted ? (quizScore === QUIZ_QUESTIONS.length ? 'proud' : 'encouraging') : (activeTab === 'KUIS' ? 'curious' : 'encouraging')}
+        className="mb-3"
+      />
 
       {/* Main Educational Screen */}
       <div className="relative z-10 flex-1 my-2">
         {activeTab === 'STRUKTUR' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Card 1: Tujuan */}
-            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-[#00F2FE]/30 backdrop-blur-md flex flex-col justify-between hover:border-[#00F2FE] transition-colors shadow-lg">
+            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-[#00F2FE]/30 backdrop-blur-md flex flex-col justify-between hover:border-[#00F2FE] hover:shadow-[0_0_20px_rgba(0,242,254,0.2)] transition-all duration-300 shadow-lg group">
               <div>
-                <div className="w-10 h-10 rounded-xl bg-[#00F2FE]/20 text-[#00F2FE] flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-[#00F2FE]/30">
+                <div className="w-10 h-10 rounded-xl bg-[#00F2FE]/20 text-[#00F2FE] flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-[#00F2FE]/30 group-hover:scale-105 transition-transform">
                   01
                 </div>
                 <h3 className="font-['Cinzel'] font-bold text-base text-white mb-1">
-                  1. Tujuan (Goal / Aim)
+                  1. Tujuan (Pernyataan Hasil)
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Menyatakan maksud utama pembuatan atau pengoperasian sesuatu. Bagian ini memberi gambaran
@@ -174,13 +178,13 @@ export const LembahInformasiStage: React.FC<LembahInformasiStageProps> = ({
             </div>
 
             {/* Card 2: Alat & Bahan */}
-            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-[#D4AF37]/30 backdrop-blur-md flex flex-col justify-between hover:border-[#D4AF37] transition-colors shadow-lg">
+            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-[#D4AF37]/30 backdrop-blur-md flex flex-col justify-between hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-300 shadow-lg group">
               <div>
-                <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/20 text-[#FFE082] flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-[#D4AF37]/30">
+                <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/20 text-[#FFE082] flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-[#D4AF37]/30 group-hover:scale-105 transition-transform">
                   02
                 </div>
                 <h3 className="font-['Cinzel'] font-bold text-base text-white mb-1">
-                  2. Alat & Bahan (Materials)
+                  2. Alat & Bahan (Perlengkapan)
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Daftar rinci material, instrumen, dan takaran kuantitatif yang presisi. Takaran tidak boleh
@@ -193,13 +197,13 @@ export const LembahInformasiStage: React.FC<LembahInformasiStageProps> = ({
             </div>
 
             {/* Card 3: Langkah-Langkah */}
-            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-emerald-500/30 backdrop-blur-md flex flex-col justify-between hover:border-emerald-400 transition-colors shadow-lg">
+            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-emerald-500/30 backdrop-blur-md flex flex-col justify-between hover:border-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-all duration-300 shadow-lg group">
               <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-emerald-500/30">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-emerald-500/30 group-hover:scale-105 transition-transform">
                   03
                 </div>
                 <h3 className="font-['Cinzel'] font-bold text-base text-white mb-1">
-                  3. Langkah-Langkah (Steps)
+                  3. Langkah-Langkah (Instruksi Runtut)
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Rangkaian aksi berurutan dan kronologis secara terperinci. Menggunakan kalimat imperatif
@@ -212,13 +216,13 @@ export const LembahInformasiStage: React.FC<LembahInformasiStageProps> = ({
             </div>
 
             {/* Card 4: Penutup / Tips */}
-            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-purple-500/30 backdrop-blur-md flex flex-col justify-between hover:border-purple-400 transition-colors shadow-lg">
+            <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-purple-500/30 backdrop-blur-md flex flex-col justify-between hover:border-purple-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all duration-300 shadow-lg group">
               <div>
-                <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-purple-500/30">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center font-['Cinzel'] font-bold text-base mb-3 border border-purple-500/30 group-hover:scale-105 transition-transform">
                   04
                 </div>
                 <h3 className="font-['Cinzel'] font-bold text-base text-white mb-1">
-                  4. Penutup & Tips (Conclusion)
+                  4. Penutup & Tips (Simpulan & Saran)
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Penegasan keberhasilan prosedur, catatan keselamatan, atau saran optimalisasi bagi pengguna.
@@ -287,7 +291,7 @@ export const LembahInformasiStage: React.FC<LembahInformasiStageProps> = ({
             <div className="p-4 rounded-xl bg-[#0D2B45]/60 border border-cyan-400/30 flex items-center justify-between">
               <div>
                 <h3 className="font-['Cinzel'] font-bold text-white text-sm">
-                  Uji Pemahaman C1 & C2
+                  Uji Pemahaman Penjelajah
                 </h3>
                 <p className="text-xs text-slate-300">
                   Jawab 3 pertanyaan berikut sebelum melanjutkan ke Misi 01!

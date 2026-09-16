@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { soundFX } from '../../utils/audioEffects';
+import { gameStateManager } from '../../utils/gameStateManager';
 import {
   ArrowLeft,
   ChevronRight,
@@ -17,6 +18,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { MissionGuideBox } from '../ui/MissionGuideBox';
+import { StoryboardProgressHUD } from '../ui/StoryboardProgressHUD';
 
 interface RepairWorkshopStageProps {
   onNext: () => void;
@@ -136,7 +138,12 @@ export const RepairWorkshopStage: React.FC<RepairWorkshopStageProps> = ({
     setActiveFeedback(choice.feedback);
     if (choice.isCorrect) {
       soundFX.playChime('repair');
-      setSolvedTasks((prev) => ({ ...prev, [task.id]: choice.text }));
+      const nextSolved = { ...solvedTasks, [task.id]: choice.text };
+      setSolvedTasks(nextSolved);
+      gameStateManager.save({ repairsCompleted: Object.keys(nextSolved).length });
+      if (Object.keys(nextSolved).length === REPAIR_TASKS.length) {
+        gameStateManager.unlockBadge('ahli_rekonstruksi');
+      }
     } else {
       soundFX.playChime('error');
     }
@@ -165,7 +172,7 @@ export const RepairWorkshopStage: React.FC<RepairWorkshopStageProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                TAHAP 8 // C5 EVALUASI & REKONSTRUKSI
+                MISI 8 // BENGKEL REKONSTRUKSI TEKS
               </span>
               <span className="text-xs font-mono text-cyan-400">Bengkel Sintaksis</span>
             </div>
@@ -185,8 +192,15 @@ export const RepairWorkshopStage: React.FC<RepairWorkshopStageProps> = ({
         </div>
       </div>
 
+      {/* 8-Step Storyboard Progress HUD */}
+      <StoryboardProgressHUD currentStep={6} className="mb-3" />
+
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="repair_workshop" className="mb-3" />
+      <MissionGuideBox
+        stageKey="repair_workshop"
+        mood={isAllRepaired ? 'proud' : (isCurrentSolved ? 'encouraging' : 'curious')}
+        className="mb-3"
+      />
 
       {/* Task Selector Tabs */}
       <div className="relative z-10 flex items-center gap-2 overflow-x-auto pb-2 mb-2">

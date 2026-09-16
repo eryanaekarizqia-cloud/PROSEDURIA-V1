@@ -34,7 +34,7 @@ export const WorldRestorationSlider: React.FC<WorldRestorationSliderProps> = ({
           }`}
         >
           <AlertTriangle className="w-3.5 h-3.5" />
-          <span>Kondisi 1: Rusak / Glitch</span>
+          <span>Kondisi 1: Rusak (Terdistorsi)</span>
         </button>
 
         <button
@@ -58,7 +58,7 @@ export const WorldRestorationSlider: React.FC<WorldRestorationSliderProps> = ({
           }`}
         >
           <CheckCircle2 className="w-3.5 h-3.5" />
-          <span>Kondisi 2: Pulih / Jernih</span>
+          <span>Kondisi 2: Pulih (Harmonis)</span>
         </button>
       </div>
 
@@ -78,7 +78,7 @@ export const WorldRestorationSlider: React.FC<WorldRestorationSliderProps> = ({
           />
           <div className="absolute bottom-3 right-3 px-3 py-1 rounded-lg bg-[#0D2B45]/90 border border-emerald-400/40 text-emerald-300 text-xs font-bold font-mono backdrop-blur-md flex items-center gap-1.5 shadow-lg">
             <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>KONDISI 2: PULIH & JERNIH</span>
+            <span>KONDISI 2: PULIH & HARMONIS</span>
           </div>
         </div>
 
@@ -91,13 +91,13 @@ export const WorldRestorationSlider: React.FC<WorldRestorationSliderProps> = ({
         >
           <img
             src={PROSEDURIA_ASSETS.worldGlitch}
-            alt="Dunia Proseduria Rusak & Glitch"
+            alt="Dunia Proseduria Rusak & Terdistorsi"
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
           <div className="absolute top-3 left-3 px-3 py-1 rounded-lg bg-[#08131F]/90 border border-rose-500/50 text-rose-300 text-xs font-bold font-mono backdrop-blur-md flex items-center gap-1.5 shadow-lg">
             <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
-            <span>KONDISI 1: RUSAK / GLITCH</span>
+            <span>KONDISI 1: RUSAK & TERDISTORSI</span>
           </div>
         </div>
 

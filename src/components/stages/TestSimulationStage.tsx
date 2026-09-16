@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { soundFX } from '../../utils/audioEffects';
+import { gameStateManager } from '../../utils/gameStateManager';
 import {
   ArrowLeft,
   ChevronRight,
@@ -18,6 +19,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { MissionGuideBox } from '../ui/MissionGuideBox';
+import { StoryboardProgressHUD } from '../ui/StoryboardProgressHUD';
 
 interface TestSimulationStageProps {
   onNext: () => void;
@@ -54,6 +56,8 @@ export const TestSimulationStage: React.FC<TestSimulationStageProps> = ({
 
     if (nextIndex === PROTOCOL_STEPS.length) {
       setIsCompleted(true);
+      gameStateManager.save({ simulationPassed: true });
+      gameStateManager.unlockBadge('penguji_prototipe');
       setTimeout(() => {
         soundFX.playChime('victory');
         setLogs((prev) => [
@@ -93,7 +97,7 @@ export const TestSimulationStage: React.FC<TestSimulationStageProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-400/20 text-[#00F2FE] border border-cyan-400/30">
-                TAHAP 9 // C5 TESTING EFISIENSI
+                MISI 9 // UJI SIMULASI PROSEDUR
               </span>
               <span className="text-xs font-mono text-slate-400">Simulasi Reaktor Bioplasma</span>
             </div>
@@ -112,8 +116,15 @@ export const TestSimulationStage: React.FC<TestSimulationStageProps> = ({
         </button>
       </div>
 
+      {/* 8-Step Storyboard Progress HUD */}
+      <StoryboardProgressHUD currentStep={7} className="mb-3" />
+
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="test_simulation" className="mb-3" />
+      <MissionGuideBox
+        stageKey="test_simulation"
+        mood={isCompleted ? 'proud' : (currentStepIndex > 0 ? 'encouraging' : 'curious')}
+        className="mb-3"
+      />
 
       {/* Main Simulation Arena */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-5 flex-1 my-2">
@@ -214,7 +225,7 @@ export const TestSimulationStage: React.FC<TestSimulationStageProps> = ({
         <div className="p-5 rounded-2xl bg-[#0D2B45]/60 border border-white/10 backdrop-blur-md flex flex-col justify-between space-y-3">
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="text-xs font-mono text-slate-300 font-bold">
-              LOG DIAGNOSTIK ARUNA AI:
+              LOG DIAGNOSTIK TELEMETRI:
             </span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           </div>
@@ -261,7 +272,7 @@ export const TestSimulationStage: React.FC<TestSimulationStageProps> = ({
           }}
           className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-[#08131F] font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] flex items-center gap-2 cursor-pointer active:scale-95"
         >
-          <span>Lanjut ke Selebrasi Relik (Tahap 10)</span>
+          <span>Lanjut ke Penghargaan Relik (Tahap 10)</span>
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>

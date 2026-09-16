@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { soundFX } from '../../utils/audioEffects';
+import { gameStateManager } from '../../utils/gameStateManager';
 import {
   ArrowLeft,
   ChevronRight,
@@ -21,7 +22,8 @@ import {
 import { MissionGuideBox } from '../ui/MissionGuideBox';
 
 interface ProcedureForgeProps {
-  onProceedToMastery: () => void;
+  onProceedToMastery?: () => void;
+  onProceedToFinalCase?: () => void;
   onBackToMap: () => void;
 }
 
@@ -62,6 +64,7 @@ const TEMPLATES = [
 
 export const ProcedureForge: React.FC<ProcedureForgeProps> = ({
   onProceedToMastery,
+  onProceedToFinalCase,
   onBackToMap,
 }) => {
   const [title, setTitle] = useState(TEMPLATES[0].title);
@@ -159,12 +162,12 @@ export const ProcedureForge: React.FC<ProcedureForgeProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-pink-500/20 text-pink-400 border border-pink-500/30">
-                TAHAP 11 // C6 CREATING
+                PUNCAK KREASI // TUNGKU CIPTA
               </span>
               <span className="text-xs font-mono text-cyan-400">Kreasi Orisinal Mandiri</span>
             </div>
             <h1 className="text-lg sm:text-2xl font-['Cinzel'] font-bold text-white tracking-wide">
-              Procedure Forge: Studio Penciptaan Teks
+              Bengkel Cipta: Studio Kreasi Prosedur
             </h1>
           </div>
         </div>
@@ -188,7 +191,11 @@ export const ProcedureForge: React.FC<ProcedureForgeProps> = ({
       </div>
 
       {/* Guide Box with Step-by-Step Instructions & Aksara Boy Voice */}
-      <MissionGuideBox stageKey="procedure_forge" className="mb-3" />
+      <MissionGuideBox
+        stageKey="procedure_forge"
+        mood={qualityScore >= 80 ? 'proud' : 'encouraging'}
+        className="mb-3"
+      />
 
       {/* Editor & Preview Grid */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-5 flex-1 my-2">
@@ -323,7 +330,7 @@ export const ProcedureForge: React.FC<ProcedureForgeProps> = ({
               <div className="flex items-center gap-2">
                 <FileCheck className="w-5 h-5 text-[#00F2FE]" />
                 <span className="text-xs font-mono font-bold text-white uppercase">
-                  LEMBAR PREVIEW DOKUMEN PROSEDUR
+                  LEMBAR PRATINJAU DOKUMEN PROSEDUR
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -394,11 +401,17 @@ export const ProcedureForge: React.FC<ProcedureForgeProps> = ({
             <button
               onClick={() => {
                 soundFX.playChime('victory');
-                onProceedToMastery();
+                gameStateManager.save({ procedureForged: true });
+                gameStateManager.unlockBadge('arsitek_prosedur');
+                if (onProceedToFinalCase) {
+                  onProceedToFinalCase();
+                } else if (onProceedToMastery) {
+                  onProceedToMastery();
+                }
               }}
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center gap-2 cursor-pointer active:scale-95"
             >
-              <span>Simpan & Buka Evaluasi Akhir (Tahap 12)</span>
+              <span>Simpan & Hadapi Kasus Pamungkas (Tahap 13)</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

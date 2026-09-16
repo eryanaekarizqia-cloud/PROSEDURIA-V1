@@ -17,35 +17,27 @@ import {
   AlertTriangle,
   Play,
   Lock,
+  Unlock,
   ArrowRight,
   BookOpen,
   Eye,
-  EyeOff,
-  Crosshair,
+  Key,
   Award,
-  Layers,
   MapPin,
-  Flame,
-  Waves,
-  Trees,
-  Flower2,
-  Castle,
   X,
-  ChevronRight,
-  ChevronLeft,
-  ChevronDown,
-  Activity,
   Plus,
   Minus,
   RotateCcw,
   Volume2,
   VolumeX,
-  Clock,
-  Unlock,
-  Radio,
-  HelpCircle,
+  Briefcase,
+  User,
+  Sliders,
 } from 'lucide-react';
 import { WorldRestorationSlider } from '../restoration/WorldRestorationSlider';
+import { AksaraSatchelModal } from './AksaraSatchelModal';
+import { AksaraCharacterSheetModal } from '../character/AksaraCharacterSheetModal';
+import { AksaraBustVisual } from '../character/AksaraBustVisual';
 
 export interface WorldMapScreenProps {
   onBackToTitle: () => void;
@@ -59,14 +51,15 @@ export interface WorldMapScreenProps {
 
 export interface MapNode {
   id: string;
-  code: string;
+  stepNumber: number;
+  waypointName: string;
   title: string;
   regionId: string;
   status: 'COMPLETED' | 'ACTIVE' | 'LOCKED';
   x: number; // percentage on map
   y: number;
   type: 'HUB' | 'MISSION' | 'BOSS';
-  bloom: string;
+  categoryTitle: string;
   xp: number;
   description: string;
   action: () => void;
@@ -78,17 +71,17 @@ export interface MapRegion {
   name: string;
   nusantaraIdentity: string;
   biome: string;
-  badgeLabel: string;
-  bloomLevel: string;
-  bloomTaxonomy: string;
+  adventureStageName: string;
+  adventureFocus: string;
   colorHex: string;
   borderCol: string;
-  x: number; // banner position %
+  x: number;
   y: number;
   progressPercent: number;
   totalMissions: number;
   completedMissions: number;
-  isUnlocked: boolean;
+  requiredStageToUnlock: number;
+  unlockKeyName: string;
   shortDesc: string;
   loreSnippet: string;
   features: string[];
@@ -105,41 +98,84 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
   onEnterProcedureForge = onEnterLembahInformasi,
   highestReachedStageIndex = 1,
 }) => {
-  // Compute Aksara position dynamically based on highest reached stage / completed mission
+  // Dynamic Aksara Location based on mission progress
   const getAksaraPos = (stageIdx: number) => {
     switch (stageIdx) {
       case 1:
       case 2:
-        return { x: 50.0, y: 76.0, name: 'Akademi Prosedur (Inisiasi)', zoneName: 'Pusat Inisiasi', advice: 'Halo Penjelajah! Mulai petualanganmu dari Lembah Informasi di barat daya!' };
+        return {
+          x: 50.0,
+          y: 76.0,
+          name: 'Akademi Prosedur (Inisiasi)',
+          zoneName: 'Pusat Inisiasi',
+          advice: 'Halo Penjelajah! Mulai langkah pertamamu dari Lembah Informasi di barat daya!',
+        };
       case 3:
-        return { x: 28.0, y: 70.0, name: 'Lembah Informasi (Dermaga Jamu)', zoneName: 'Zona 1: Lembah Informasi', advice: 'Aku telah berpindah ke Dermaga Jamu Kuno di Lembah Informasi! Pelajari 4 pilar struktur teks prosedur!' };
+        return {
+          x: 28.0,
+          y: 70.0,
+          name: 'Lembah Informasi (Dermaga Jamu)',
+          zoneName: 'Zona 1: Lembah Informasi',
+          advice: 'Aku berada di Dermaga Jamu Kuno! Mari kita telusuri 4 pilar struktur teks prosedur!',
+        };
       case 4:
-        return { x: 20.0, y: 56.0, name: 'Laboratorium Reaktor Alpha-01', zoneName: 'Zona 1: Pos Reaktor', advice: 'Waspada! Aku telah berpindah ke Pos Reaktor Alpha untuk mengawasi briefing anomali bioplasma!' };
+        return {
+          x: 20.0,
+          y: 56.0,
+          name: 'Pos Reaktor Alpha-01',
+          zoneName: 'Zona 1: Pos Reaktor',
+          advice: 'Waspada! Aku berada di Pos Reaktor Alpha untuk mengawasi takaran bahan bioplasma!',
+        };
       case 5:
-        return { x: 38.0, y: 46.0, name: 'Jembatan Runtun Logika', zoneName: 'Zona 2: Sungai Logika', advice: 'Hebat! Misi briefing selesai, sekarang aku berpindah ke Jembatan Runtun Logika. Susun urutan langkah kronologis!' };
+        return {
+          x: 74.0,
+          y: 66.0,
+          name: 'Taman Bahasa Nusantara',
+          zoneName: 'Zona 2: Taman Bahasa',
+          advice: 'Kunci Taman Bahasa telah terbuka! Ayo telusuri verba perintah dan takaran presisi!',
+        };
       case 6:
-        return { x: 74.0, y: 66.0, name: 'Taman Bahasa Nusantara', zoneName: 'Zona 2: Taman Bahasa', advice: 'Aku berpindah ke Taman Bahasa! Ayo bersihkan glitch kerancuan kata dan takaran ambigu!' };
       case 7:
-        return { x: 82.0, y: 52.0, name: 'Paviliun Kristal Kaidah', zoneName: 'Zona 3: Papan Bukti', advice: 'Aku telah berpindah ke Paviliun Kristal Kaidah untuk memverifikasi kecocokan bukti kesalahan!' };
+        return {
+          x: 38.0,
+          y: 46.0,
+          name: 'Sungai Logika Nusantara',
+          zoneName: 'Zona 3: Sungai Logika',
+          advice: 'Arus Sungai Logika butuh bantuanmu! Rangkai kronologi langkah kerja agar arus kembali tenang!',
+        };
       case 8:
-        return { x: 84.0, y: 35.0, name: 'Bengkel Rekonstruksi Karst', zoneName: 'Zona 3: Bengkel Rekonstruksi', advice: 'Aku berpindah ke Bengkel Rekonstruksi Karst! Waktunya menyunting kalimat menjadi imperatif baku!' };
       case 9:
-        return { x: 64.0, y: 28.0, name: 'Ruang Uji Reaktor Plasma', zoneName: 'Zona 4: Ruang Uji', advice: 'Aku telah berpindah ke Ruang Uji Reaktor! Ayo uji kestabilan prosedur ramuan kita!' };
+        return {
+          x: 84.0,
+          y: 35.0,
+          name: 'Kawasan Prosedur Rusak',
+          zoneName: 'Zona 4: Kawah Basalt',
+          advice: 'Peringatan anomali! Karantina teks berbahaya dan perbaiki cacat logika di altar candi ini!',
+        };
       case 10:
-        return { x: 50.0, y: 32.0, name: 'Altar Kemenangan Evaluasi C5', zoneName: 'Zona 4: Altar Capaian', advice: 'Kemenangan besar! Aku berpindah ke Altar Kemenangan bersama lencana emasmu!' };
       case 11:
-        return { x: 50.0, y: 20.0, name: 'Tungku Pusaka Emas C6', zoneName: 'Zona 5: Tungku Emas', advice: 'Puncak kreasi C6! Aku berpindah ke Tungku Emas Majapahit untuk mencipta teks prosedur barumu!' };
       case 12:
-        return { x: 50.0, y: 14.0, name: 'Puncak Menara Maestro', zoneName: 'Puncak Maestro', advice: 'Luar biasa! Aku berpindah ke Puncak Menara Maestro bersama sertifikat kelulusanmu!' };
-      case 13:
+        return {
+          x: 50.0,
+          y: 20.0,
+          name: 'Tungku Cipta Prosedur',
+          zoneName: 'Zona 5: Tungku Emas',
+          advice: 'Puncak peradaban! Ayo tempa teks prosedur orisinalmu sendiri hingga meraih gelar Maestro!',
+        };
       default:
-        return { x: 50.0, y: 8.0, name: 'Krisis Inti Reaktor Sentral', zoneName: 'Krisis Pamungkas', advice: 'Misi darurat pamungkas! Aku berada di Inti Reaktor Sentral untuk penyelamatan terakhir!' };
+        return {
+          x: 50.0,
+          y: 8.0,
+          name: 'Krisis Inti Reaktor Sentral',
+          zoneName: 'Krisis Pamungkas',
+          advice: 'Misi darurat pamungkas! Aku berada di Inti Reaktor Sentral untuk penyelamatan terakhir!',
+        };
     }
   };
 
   const currentAksaraPos = getAksaraPos(highestReachedStageIndex);
 
-  // State
+  // States
   const [selectedRegionId, setSelectedRegionId] = useState<string>('lembah');
   const [selectedNode, setSelectedNode] = useState<MapNode | null>(null);
   const [hoveredNode, setHoveredNode] = useState<MapNode | null>(null);
@@ -149,12 +185,16 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
   const [mapDisplayMode, setMapDisplayMode] = useState<'clean_pins' | 'labeled_pins' | 'panoramic'>('clean_pins');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [panPosition, setPanPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [allZonesUnlocked, setAllZonesUnlocked] = useState<boolean>(true);
+
+  // Game unlocking & progression state
+  const [freeRoamMode, setFreeRoamMode] = useState<boolean>(false);
   const [showRestorationModal, setShowRestorationModal] = useState<boolean>(false);
-  const [activeFilter, setActiveFilter] = useState<'SEMUA' | 'ALUR' | 'GLITCH'>('SEMUA');
+  const [showSatchelModal, setShowSatchelModal] = useState<boolean>(false);
+  const [showCharacterSheetModal, setShowCharacterSheetModal] = useState<boolean>(false);
+  const [lockedNotice, setLockedNotice] = useState<string | null>(null);
   const [soundMuted, setSoundMuted] = useState<boolean>(soundFX.getMuted());
 
-  // Listen to Aksara speech
+  // Listen to Aksara voice synthesizer
   useEffect(() => {
     const handleVoiceChange = (speaking: boolean) => {
       setIsAksaraSpeaking(speaking);
@@ -166,7 +206,29 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
     };
   }, []);
 
-  // NUSANTARA 5 REGIONS DEFINITION
+  // Exploration Progression Logic: Regions unlock as player progresses through stages
+  const isRegionUnlocked = (regionId: string, requiredStage: number) => {
+    if (freeRoamMode) return true;
+    if (regionId === 'akademi' || regionId === 'lembah') return true;
+    return (highestReachedStageIndex ?? 1) >= requiredStage;
+  };
+
+  const getRegionUnlockRequirementText = (region: MapRegion) => {
+    switch (region.id) {
+      case 'taman':
+        return 'Selesaikan eksplorasi di Lembah Informasi (Tahap 3) untuk membuka Kunci Teratai Cyan.';
+      case 'sungai':
+        return 'Selesaikan teka-teki kaidah bahasa di Taman Bahasa (Tahap 5) untuk membuka Kunci Arung Logika.';
+      case 'kawasan_rusak':
+        return 'Selesaikan penataan kronologi di Sungai Logika (Tahap 7) untuk membuka Kunci Kawah Basalt.';
+      case 'procedure_forge':
+        return 'Selesaikan audit anomali di Kawasan Rusak (Tahap 9) untuk membuka Kunci Pusaka Emas.';
+      default:
+        return 'Wilayah awal terbuka untuk dijelajahi.';
+    }
+  };
+
+  // 5 REGIONS OF NUSANTARA (FREE FROM TECHNICAL CODES LIKE C1-C6)
   const REGIONS: MapRegion[] = [
     {
       id: 'akademi',
@@ -174,9 +236,8 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
       name: 'Akademi Prosedur',
       nusantaraIdentity: 'Inspirasi: Gerbang Candi & Keraton Nusantara',
       biome: 'Pusat Pembelajaran & Benteng Awal',
-      badgeLabel: 'C1 • 100% • 2/2 Selesai',
-      bloomLevel: 'C1 Fondasi',
-      bloomTaxonomy: 'C1 Mengingat Fondasi Struktur',
+      adventureStageName: 'Pusat Inisiasi',
+      adventureFocus: 'Pengenalan Anatomi 4 Pilar Prosedur',
       colorHex: '#38BDF8',
       borderCol: 'border-sky-400',
       x: 50.0,
@@ -184,7 +245,8 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
       progressPercent: 100,
       totalMissions: 2,
       completedMissions: 2,
-      isUnlocked: true,
+      requiredStageToUnlock: 1,
+      unlockKeyName: 'Kunci Gerbang Candi',
       shortDesc: 'Pusat pelatihan para Penjelajah Logika untuk memahami anatomi 4 pilar teks prosedur.',
       loreSnippet:
         'Di pelataran candi megah ini, setiap penjelajah menerima Magic Logbook dan Kompas Logika dari Pemandu Aksara sebelum memulai ekspedisi melintasi kepulauan Proseduria.',
@@ -199,17 +261,17 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
       name: 'Lembah Informasi',
       nusantaraIdentity: 'Inspirasi: Air Terjun Tumpak Sewu & Terasering Jatiluwih',
       biome: 'Hutan Tropis & Air Terjun Bertingkat',
-      badgeLabel: 'C1-C2 • 66% • 2/3 Misi',
-      bloomLevel: 'C1-C2',
-      bloomTaxonomy: 'C1 Mengingat & C2 Memahami',
+      adventureStageName: 'Ekspedisi Takaran',
+      adventureFocus: 'Ekstraksi Bahan & Langkah Tersembunyi',
       colorHex: '#10B981',
       borderCol: 'border-emerald-400',
       x: 18.0,
       y: 48.0,
-      progressPercent: 66,
+      progressPercent: (highestReachedStageIndex ?? 1) >= 4 ? 100 : 66,
       totalMissions: 3,
-      completedMissions: 2,
-      isUnlocked: true,
+      completedMissions: (highestReachedStageIndex ?? 1) >= 4 ? 3 : 2,
+      requiredStageToUnlock: 1,
+      unlockKeyName: 'Kunci Segel Lembah',
       shortDesc: 'Telusuri terasering zamrud dan air terjun untuk mengekstrak takaran bahan dan struktur yang terselubung.',
       loreSnippet:
         'Lembah subur dengan kabut tipis dan air terjun bertingkat khas Tumpak Sewu. Banyak plakat prosedur kuno yang rusak karena takaran dan langkah kerjanya tersapu air bah.',
@@ -224,17 +286,17 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
       name: 'Taman Bahasa',
       nusantaraIdentity: 'Inspirasi: Danau Teratai & Paviliun Joglo Luminous',
       biome: 'Taman Flora Bercahaya & Paviliun Kristal',
-      badgeLabel: 'C3 • 33% • 1/3 Misi',
-      bloomLevel: 'C3',
-      bloomTaxonomy: 'C3 Mengaplikasikan Verba & Adverbia',
+      adventureStageName: 'Kaidah Kebahasaan',
+      adventureFocus: 'Verba Perintah Imperatif & Adverbia Presisi',
       colorHex: '#00F2FE',
       borderCol: 'border-cyan-400',
       x: 82.0,
       y: 72.0,
-      progressPercent: 33,
+      progressPercent: (highestReachedStageIndex ?? 1) >= 6 ? 100 : (highestReachedStageIndex ?? 1) >= 4 ? 40 : 0,
       totalMissions: 3,
-      completedMissions: 1,
-      isUnlocked: true,
+      completedMissions: (highestReachedStageIndex ?? 1) >= 6 ? 3 : (highestReachedStageIndex ?? 1) >= 4 ? 1 : 0,
+      requiredStageToUnlock: 4,
+      unlockKeyName: 'Kunci Teratai Cyan',
       shortDesc: 'Uji kejelian kaidah kebahasaan: verba imperatif, konjungsi temporal, dan takaran terukur.',
       loreSnippet:
         'Taman terapung dengan bunga teratai raksasa bercahaya neon cyan. Di sini, kalimat pasif deskriptif yang lambat akan memperlambat jembatan cahaya!',
@@ -249,17 +311,17 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
       name: 'Sungai Logika',
       nusantaraIdentity: 'Inspirasi: Ngarai Sianok & Arung Jeram Mahakam',
       biome: 'Ngarai Kristal & Aliran Arus Deras',
-      badgeLabel: 'C4 • 0% • 0/3 Misi',
-      bloomLevel: 'C4',
-      bloomTaxonomy: 'C4 Menganalisis Urutan Kronologis',
+      adventureStageName: 'Penataan Kronologi',
+      adventureFocus: 'Rekonstruksi Urutan Runtut & Konjungsi',
       colorHex: '#3B82F6',
       borderCol: 'border-blue-400',
       x: 32.0,
       y: 22.0,
-      progressPercent: 0,
-      totalMissions: 3,
-      completedMissions: 0,
-      isUnlocked: allZonesUnlocked,
+      progressPercent: (highestReachedStageIndex ?? 1) >= 8 ? 100 : (highestReachedStageIndex ?? 1) >= 6 ? 30 : 0,
+      totalMissions: 2,
+      completedMissions: (highestReachedStageIndex ?? 1) >= 8 ? 2 : 0,
+      requiredStageToUnlock: 6,
+      unlockKeyName: 'Kunci Arung Logika',
       shortDesc: 'Rekonstruksi alur langkah yang teracak agar arus air tidak menabrak pusaran logika yang berbahaya.',
       loreSnippet:
         'Sungai beraliran deras yang mengalir di antara tebing ngarai curam. Aliran air mengikuti urutan prosedur: jika langkah tertukar, arus berbalik dan memicu anomali.',
@@ -274,17 +336,17 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
       name: 'Kawasan Prosedur Rusak',
       nusantaraIdentity: 'Inspirasi: Kawah Gunung Bromo & Tebing Karst Rammang-Rammang',
       biome: 'Kawah Basalt Hitam & Retakan Glitch Merah',
-      badgeLabel: 'C5 • 0% • 0/2 Misi',
-      bloomLevel: 'C5',
-      bloomTaxonomy: 'C5 Mengevaluasi Kerusakan & Mengaudit',
+      adventureStageName: 'Karantina Glitch',
+      adventureFocus: 'Audit Cacat Logika & Prosedur Bahaya',
       colorHex: '#F59E0B',
       borderCol: 'border-amber-400',
       x: 84.0,
       y: 22.0,
-      progressPercent: 0,
+      progressPercent: (highestReachedStageIndex ?? 1) >= 10 ? 100 : (highestReachedStageIndex ?? 1) >= 8 ? 50 : 0,
       totalMissions: 2,
-      completedMissions: 0,
-      isUnlocked: allZonesUnlocked,
+      completedMissions: (highestReachedStageIndex ?? 1) >= 10 ? 2 : 0,
+      requiredStageToUnlock: 8,
+      unlockKeyName: 'Kunci Kawah Basalt',
       shortDesc: 'Karantina zona anomali paling berbahaya: temukan langkah rancu, hilangkan kontradiksi berbahaya.',
       loreSnippet:
         'Kawasan berbatu hitam yang retak dengan kilatan energi merah. Di kawah ini terkumpul teks prosedur yang cacat: tidak logis, membahayakan keselamatan, dan tanpa takaran baku.',
@@ -296,236 +358,279 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
     {
       id: 'procedure_forge',
       number: 5,
-      name: 'Procedure Forge',
+      name: 'Tungku Cipta Prosedur',
       nusantaraIdentity: 'Inspirasi: Puncak Kerajaan Majapahit & Tungku Pusaka Emas',
       biome: 'Puncak Kastil Melayang & Tungku Emas Menyala',
-      badgeLabel: 'C6 • 0% • 0/3 Misi',
-      bloomLevel: 'C6',
-      bloomTaxonomy: 'C6 Mencipta Teks Prosedur Orisinal',
+      adventureStageName: 'Puncak Maestro',
+      adventureFocus: 'Menempa Teks Prosedur Orisinal Siap Uji',
       colorHex: '#EC4899',
       borderCol: 'border-pink-400',
       x: 50.0,
       y: 8.0,
-      progressPercent: 0,
-      totalMissions: 3,
-      completedMissions: 0,
-      isUnlocked: allZonesUnlocked,
-      shortDesc: 'Rancang dan tempa teks prosedur orisinalmu sendiri hingga meraih akreditasi Master Logika.',
+      progressPercent: (highestReachedStageIndex ?? 1) >= 12 ? 100 : 0,
+      totalMissions: 1,
+      completedMissions: (highestReachedStageIndex ?? 1) >= 12 ? 1 : 0,
+      requiredStageToUnlock: 10,
+      unlockKeyName: 'Kunci Pusaka Emas',
+      shortDesc: 'Rancang dan tempa teks prosedur orisinalmu sendiri hingga meraih predikat Maestro Logika.',
       loreSnippet:
-        'Puncak tertinggi Proseduria tempat tungku pusaka menyala abadi. Para Master Logika merancang prosedur mutlak untuk menyelamatkan seluruh peradaban Nusantara.',
-      features: ['Tungku tempa emas pijar', 'Puncak kastil kubah emas', 'Simulasi kelayakan operasional C6'],
+        'Puncak tertinggi Proseduria tempat tungku pusaka menyala abadi. Para Maestro Logika merancang prosedur mutlak untuk menyelamatkan seluruh peradaban Nusantara.',
+      features: ['Tungku tempa emas pijar', 'Puncak kastil kubah emas', 'Simulasi kelayakan operasional'],
       aksaraAdvice:
         'Buktikan keahlian tertinggimu di sini dengan menyusun teks prosedur baru yang lengkap, sistematis, dan aman!',
       action: onEnterProcedureForge,
     },
   ];
 
-  // INTERACTIVE MAP NODES WITH CAREFULLY SPREAD GEOGRAPHIC COORDINATES (ZERO OVERLAP!)
+  // INTERACTIVE EXPEDITION WAYPOINTS (PURE ADVENTURE CHECKPOINTS - ZERO TECHNICAL CODES)
   const MAP_NODES: MapNode[] = [
-    // 1. Akademi Prosedur (Bottom Center)
+    // 1. Akademi Prosedur Waypoints
     {
-      id: 'hub-01',
-      code: 'HUB-1',
-      title: 'Inisiasi Penjelajah',
+      id: 'pos-init-1',
+      stepNumber: 1,
+      waypointName: 'Gerbang Inisiasi',
+      title: 'Gerbang Akademi Proseduria',
       regionId: 'akademi',
       status: 'COMPLETED',
       x: 43.0,
       y: 76.0,
       type: 'HUB',
-      bloom: 'C1 Fondasi',
+      categoryTitle: 'Penerimaan Buku Logika',
       xp: 100,
       description: 'Pengenalan misi utama dan penerimaan Magic Logbook dari Pemandu Aksara.',
       action: onEnterLembahInformasi,
     },
     {
-      id: 'hub-02',
-      code: 'HUB-2',
-      title: 'Arsip Anatomi Prosedur',
+      id: 'pos-init-2',
+      stepNumber: 2,
+      waypointName: 'Balai Anatomi',
+      title: 'Arsip Anatomi 4 Pilar',
       regionId: 'akademi',
       status: 'COMPLETED',
       x: 57.0,
       y: 76.0,
       type: 'HUB',
-      bloom: 'C1 Struktur 4 Pilar',
+      categoryTitle: 'Struktur Teks Prosedur',
       xp: 150,
-      description: 'Menganalisis anatomi 4 bagian teks prosedur: Tujuan, Bahan, Langkah, dan Penutup.',
+      description: 'Mempelajari anatomi 4 pilar teks prosedur: Tujuan, Material, Langkah, dan Penutup.',
       action: onEnterLembahInformasi,
     },
 
-    // 2. Lembah Informasi Nodes (Left Tropical Waterfalls & Terraces)
+    // 2. Lembah Informasi Waypoints
     {
-      id: 'm-1.1',
-      code: 'M-1.1',
-      title: 'Misteri Takaran Jamu',
+      id: 'pos-lembah-1',
+      stepNumber: 3,
+      waypointName: 'Dermaga Jamu',
+      title: 'Misteri Takaran Jamu Kuno',
       regionId: 'lembah',
-      status: 'ACTIVE',
+      status: (highestReachedStageIndex ?? 1) > 3 ? 'COMPLETED' : 'ACTIVE',
       x: 28.0,
       y: 74.0,
       type: 'MISSION',
-      bloom: 'C1 Menemukan Informasi',
+      categoryTitle: 'Eksplorasi Takaran Bahan',
       xp: 200,
       description: 'Mengidentifikasi bahan dan takaran yang hilang pada resep ramuan jamu penjernih air di dermaga jukung.',
       action: onEnterLembahInformasi,
     },
     {
-      id: 'm-1.2',
-      code: 'M-1.2',
-      title: 'Klasifikasi Bagian Teks',
+      id: 'pos-lembah-2',
+      stepNumber: 4,
+      waypointName: 'Terasering Zamrud',
+      title: 'Klasifikasi Paragraf 4 Pilar',
       regionId: 'lembah',
-      status: 'COMPLETED',
+      status: (highestReachedStageIndex ?? 1) >= 4 ? 'COMPLETED' : 'ACTIVE',
       x: 14.0,
       y: 64.0,
       type: 'MISSION',
-      bloom: 'C2 Memilah Struktur',
+      categoryTitle: 'Memilah Struktur 4 Pilar',
       xp: 250,
-      description: 'Mengelompokkan paragraf ke dalam pilar Tujuan, Material, dan Langkah Kerja di terasering zamrud.',
+      description: 'Mengelompokkan kalimat ke dalam pilar Tujuan, Material, dan Langkah Kerja di terasering zamrud.',
       action: onEnterLembahInformasi,
     },
     {
-      id: 'm-1.3',
-      code: 'M-1.3',
-      title: 'Audit Plakat Tambang',
+      id: 'pos-lembah-3',
+      stepNumber: 5,
+      waypointName: 'Plakat Air Terjun',
+      title: 'Audit Plakat Air Terjun Suci',
       regionId: 'lembah',
-      status: allZonesUnlocked ? 'ACTIVE' : 'LOCKED',
+      status: (highestReachedStageIndex ?? 1) >= 4 ? 'COMPLETED' : 'ACTIVE',
       x: 24.0,
       y: 56.0,
       type: 'MISSION',
-      bloom: 'C2 Validasi Kelengkapan',
+      categoryTitle: 'Validasi Informasi Terselubung',
       xp: 300,
       description: 'Menemukan informasi implisit yang tidak tertulis pada instruksi penambangan kristal air terjun.',
       action: onEnterLembahInformasi,
     },
 
-    // 3. Taman Bahasa Nodes (Right Luminous Gardens & Lotus)
+    // 3. Taman Bahasa Waypoints
     {
-      id: 'm-2.1',
-      code: 'M-2.1',
-      title: 'Pohon Verba Imperatif',
+      id: 'pos-taman-1',
+      stepNumber: 6,
+      waypointName: 'Danau Teratai',
+      title: 'Pohon Verba Perintah Lugas',
       regionId: 'taman',
-      status: 'COMPLETED',
+      status: !isRegionUnlocked('taman', 4) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 6 ? 'COMPLETED' : 'ACTIVE',
       x: 70.0,
       y: 62.0,
       type: 'MISSION',
-      bloom: 'C3 Kata Kerja Perintah',
+      categoryTitle: 'Verba Imperatif Lugas',
       xp: 220,
       description: 'Mengubah kalimat pasif deskriptif menjadi kalimat perintah imperatif yang lugas di danau teratai.',
       action: onEnterSequencePuzzle,
     },
     {
-      id: 'm-2.2',
-      code: 'M-2.2',
-      title: 'Labirin Adverbia & Takaran',
+      id: 'pos-taman-2',
+      stepNumber: 7,
+      waypointName: 'Pendopo Joglo',
+      title: 'Labirin Takaran Baku Presisi',
       regionId: 'taman',
-      status: 'ACTIVE',
-      x: 84.0,
+      status: !isRegionUnlocked('taman', 4) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 6 ? 'COMPLETED' : 'ACTIVE',
+      x: 82.0,
       y: 58.0,
       type: 'MISSION',
-      bloom: 'C2 Takaran Akurat',
+      categoryTitle: 'Adverbia & Ukuran Baku',
       xp: 280,
       description: 'Mengoreksi ukuran ambigu menjadi takaran baku kuantitatif (gram, mililiter, derajat) di pendopo joglo.',
       action: onEnterSequencePuzzle,
     },
     {
-      id: 'm-2.3',
-      code: 'M-2.3',
-      title: 'Konser Istilah Teknis',
+      id: 'pos-taman-3',
+      stepNumber: 8,
+      waypointName: 'Titian Kristal',
+      title: 'Harmoni Istilah Operasional',
       regionId: 'taman',
-      status: allZonesUnlocked ? 'ACTIVE' : 'LOCKED',
+      status: !isRegionUnlocked('taman', 4) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 6 ? 'COMPLETED' : 'ACTIVE',
       x: 72.0,
       y: 50.0,
       type: 'MISSION',
-      bloom: 'C3 Kosakata Khusus',
+      categoryTitle: 'Kosakata Operasional',
       xp: 320,
       description: 'Menyelaraskan istilah teknis dan konjungsi temporal dalam panduan operasional di titian kristal.',
       action: onEnterSequencePuzzle,
     },
 
-    // 4. Sungai Logika (Top-Left Crystal River)
+    // 4. Sungai Logika Waypoints
     {
-      id: 'm-3.1',
-      code: 'M-3.1',
-      title: 'Jembatan Konjungsi Kronologi',
+      id: 'pos-sungai-1',
+      stepNumber: 9,
+      waypointName: 'Ngarai Kronologi',
+      title: 'Titian Konjungsi Waktu',
       regionId: 'sungai',
-      status: allZonesUnlocked ? 'ACTIVE' : 'LOCKED',
+      status: !isRegionUnlocked('sungai', 6) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 8 ? 'COMPLETED' : 'ACTIVE',
       x: 22.0,
       y: 32.0,
       type: 'MISSION',
-      bloom: 'C4 Analisis Alur',
+      categoryTitle: 'Rangkai Urutan Kronologis',
       xp: 350,
       description: 'Menyusun urutan instruksi yang runtut menggunakan konjungsi temporal agar arus air sungai stabil.',
       action: onEnterSequencePuzzle,
     },
     {
-      id: 'm-3.2',
-      code: 'M-3.2',
+      id: 'pos-sungai-2',
+      stepNumber: 10,
+      waypointName: 'Jeram Logika',
       title: 'Pusaran Langkah Terbalik',
       regionId: 'sungai',
-      status: allZonesUnlocked ? 'ACTIVE' : 'LOCKED',
+      status: !isRegionUnlocked('sungai', 6) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 8 ? 'COMPLETED' : 'ACTIVE',
       x: 38.0,
       y: 32.0,
       type: 'MISSION',
-      bloom: 'C4 Rekonstruksi Kronologi',
+      categoryTitle: 'Koreksi Langkah Teracak',
       xp: 400,
-      description: 'Menemukan anomali langkah 4 yang mendahului langkah 1 dan mengembalikannya ke posisi logis.',
+      description: 'Menemukan anomali langkah yang mendahului langkah persiapan dan mengembalikannya ke posisi logis.',
       action: onEnterSequencePuzzle,
     },
 
-    // 5. Kawasan Prosedur Rusak (Top-Right Volcanic Crater)
+    // 5. Kawasan Prosedur Rusak Waypoints
     {
-      id: 'm-4.1',
-      code: 'M-4.1',
+      id: 'pos-rusak-1',
+      stepNumber: 11,
+      waypointName: 'Kawah Glitch',
       title: 'Kawah Kalimat Ambigu',
       regionId: 'kawasan_rusak',
-      status: allZonesUnlocked ? 'ACTIVE' : 'LOCKED',
+      status: !isRegionUnlocked('kawasan_rusak', 8) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 10 ? 'COMPLETED' : 'ACTIVE',
       x: 74.0,
       y: 34.0,
       type: 'MISSION',
-      bloom: 'C5 Evaluasi Cacat Logika',
+      categoryTitle: 'Deteksi Cacat Logika',
       xp: 450,
       description: 'Mengidentifikasi prosedur berbahaya di kawah basalt yang tidak menyertakan alat pelindung diri.',
       action: onEnterProcedureGlitch,
     },
     {
-      id: 'm-4.2',
-      code: 'M-4.2',
+      id: 'pos-rusak-2',
+      stepNumber: 12,
+      waypointName: 'Altar Basalt',
       title: 'Altar Candi Glitch Kritis',
       regionId: 'kawasan_rusak',
-      status: allZonesUnlocked ? 'ACTIVE' : 'LOCKED',
+      status: !isRegionUnlocked('kawasan_rusak', 8) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 10 ? 'COMPLETED' : 'ACTIVE',
       x: 88.0,
       y: 36.0,
       type: 'MISSION',
-      bloom: 'C5 Audit Total',
+      categoryTitle: 'Audit Teks Berbahaya',
       xp: 500,
       description: 'Menganalisis teks prosedur beracun dan memperbaiki keseluruhan 4 pilar agar aman dijalankan.',
       action: onEnterProcedureGlitch,
     },
 
-    // 6. Procedure Forge (Top Peak Golden Spire)
+    // 6. Tungku Cipta Prosedur Waypoint
     {
-      id: 'm-5.1',
-      code: 'M-5.1',
-      title: 'Tungku Pusaka Emas C6',
+      id: 'pos-forge-1',
+      stepNumber: 13,
+      waypointName: 'Tungku Pusaka',
+      title: 'Tungku Pusaka Emas Maestro',
       regionId: 'procedure_forge',
-      status: allZonesUnlocked ? 'ACTIVE' : 'LOCKED',
+      status: !isRegionUnlocked('procedure_forge', 10) ? 'LOCKED' : (highestReachedStageIndex ?? 1) >= 12 ? 'COMPLETED' : 'ACTIVE',
       x: 50.0,
       y: 20.0,
       type: 'BOSS',
-      bloom: 'C6 Kreasi Orisinal',
+      categoryTitle: 'Tempa Prosedur Orisinal',
       xp: 1000,
-      description: 'Menciptakan karya teks prosedur orisinal yang diuji melalui simulator kelayakan operasional.',
+      description: 'Menciptakan karya teks prosedur orisinal yang diuji langsung melalui simulator kelayakan operasional.',
       action: onEnterProcedureForge,
     },
   ];
 
   const currentRegion = REGIONS.find((r) => r.id === selectedRegionId) || REGIONS[1];
   const regionMissions = MAP_NODES.filter((n) => n.regionId === currentRegion.id);
+  const isCurrentRegionUnlocked = isRegionUnlocked(currentRegion.id, currentRegion.requiredStageToUnlock);
 
-  // Aksara Spoken Voice Handler for Map
+  // Aksara Spoken Voice Handler
   const handleSpeakAksaraAdvice = () => {
     if (isAksaraSpeaking) {
       aksaraVoice.stop();
     } else {
       aksaraVoice.speak(currentRegion.aksaraAdvice);
+    }
+  };
+
+  // Attempt to enter a mission or region, enforcing the lock
+  const handleAttemptAction = (node?: MapNode | null) => {
+    const targetRegion = node ? REGIONS.find((r) => r.id === node.regionId) || currentRegion : currentRegion;
+    const isUnlocked = isRegionUnlocked(targetRegion.id, targetRegion.requiredStageToUnlock);
+
+    if (!isUnlocked) {
+      soundFX.playChime('error');
+      const reqText = getRegionUnlockRequirementText(targetRegion);
+      setLockedNotice(`🔒 Segel Anomali Aktif! ${targetRegion.name} masih terkunci. ${reqText}`);
+      aksaraVoice.speak(`Wilayah ${targetRegion.name} masih terkunci! Selesaikan misi sebelumnya untuk membuka kuncinya.`);
+      return;
+    }
+
+    if (node && node.status === 'LOCKED') {
+      soundFX.playChime('error');
+      setLockedNotice(`🔒 Pos ini masih terkunci! Selesaikan pos sebelumnya terlebih dahulu.`);
+      aksaraVoice.speak(`Pos ini masih terkunci! Selesaikan pos sebelumnya terlebih dahulu.`);
+      return;
+    }
+
+    soundFX.playChime('gold');
+    aksaraVoice.stop();
+    if (node) {
+      node.action();
+    } else {
+      targetRegion.action();
     }
   };
 
@@ -553,71 +658,103 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
 
   return (
     <div className="relative w-full h-screen bg-[#050C16] text-white flex flex-col justify-between overflow-hidden select-none font-sans">
-      {/* 1. TOP BAR NAVIGATION HUD */}
-      <header className="relative z-40 h-14 px-3 sm:px-5 bg-[#0A1626]/95 border-b border-[#D4AF37]/50 flex items-center justify-between gap-3 shadow-2xl backdrop-blur-md">
-        {/* Left: Back to Title & App Title Tag */}
-        <div className="flex items-center gap-3 shrink-0">
+      {/* 1. TOP GAME HUD (AUTHENTIC EDUCATIONAL GAME FEEL) */}
+      <header className="relative z-40 h-14 px-3 sm:px-5 bg-[#0A1626]/95 border-b border-[#D4AF37]/50 flex items-center justify-between gap-2 sm:gap-3 shadow-2xl backdrop-blur-md">
+        {/* Left: Back to Title & Map Exploration Title */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={() => {
               soundFX.playChime('click');
               aksaraVoice.stop();
               onBackToTitle();
             }}
-            className="px-3 py-1.5 rounded-xl bg-[#0E2338] hover:bg-[#163654] text-slate-200 hover:text-white border border-[#D4AF37]/40 text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-md group"
+            className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#0E2338] hover:bg-[#163654] text-slate-200 hover:text-white border border-[#D4AF37]/40 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md group"
           >
             <ArrowLeft className="w-3.5 h-3.5 text-[#FFE082] group-hover:-translate-x-0.5 transition-transform" />
-            <span className="hidden sm:inline">Layar Pembuka</span>
+            <span className="hidden sm:inline">Kembali</span>
           </button>
 
-          {/* Title Plate */}
-          <div className="flex items-center gap-2 border-l border-white/10 pl-3">
+          {/* Title Emblem */}
+          <div className="flex items-center gap-2 border-l border-white/10 pl-2 sm:pl-3">
             <div className="w-7 h-7 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center text-[#FFE082] shadow">
               <Compass className="w-4 h-4 text-[#FFE082]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="font-['Cinzel'] font-black text-xs sm:text-sm text-white tracking-wider truncate">
-                  PETA BENUA PROSEDURIA
+                  PETA JELAJAH PROSEDURIA
                 </span>
-                <span className="px-1.5 py-0.2 rounded bg-cyan-500/20 border border-cyan-400 text-cyan-300 text-[9px] font-mono font-bold">
-                  FASE D
+                <span className="hidden md:inline px-1.5 py-0.2 rounded bg-emerald-500/20 border border-emerald-400 text-emerald-300 text-[9px] font-mono font-bold">
+                  MODE EKSPLORASI
                 </span>
               </div>
-              <div className="text-[10px] text-slate-400 font-mono hidden md:block">
-                Eksplorasi (Zona 1–2) → Progresi (Zona 3–4) → Penguasaan (Zona 5)
+              <div className="text-[10px] text-slate-400 font-mono hidden lg:block">
+                Jelajahi setiap wilayah dan kumpulkan kunci petualangan teks prosedur
               </div>
             </div>
           </div>
         </div>
 
-        {/* Center: Stage Step Pill (TAHAP 2/13 PETA BENUA) */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-[#081321] border border-[#D4AF37]/50 shadow-inner">
-          <span className="px-2 py-0.5 rounded-full bg-[#D4AF37] text-slate-950 text-[10px] font-mono font-black">
-            TAHAP 2/13
-          </span>
-          <span className="text-xs font-mono text-[#FFE082] font-bold">
-            PETA BENUA PROSEDURIA
-          </span>
-          <span className="text-[10px] text-cyan-300 font-mono">
-            • 5 Zona Nusantara
-          </span>
+        {/* Center: Aksara Explorer Satchel & Character Sheet Action Buttons */}
+        <div className="flex items-center gap-2">
+          {/* Tas Penjelajah Aksara Button */}
+          <button
+            onClick={() => {
+              soundFX.playChime('gold');
+              setShowSatchelModal(true);
+            }}
+            className="px-2.5 sm:px-3 py-1 rounded-xl bg-gradient-to-r from-[#0F2D4A] to-[#0A1D30] hover:from-[#153D63] hover:to-[#0F2A45] border border-amber-400/60 text-[#FFE082] text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all hover:scale-102"
+            title="Buka Tas Penjelajah (Koleksi Kunci & Buku Saku)"
+          >
+            <Key className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden sm:inline">Tas Penjelajah</span>
+            <span className="px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 text-[9px] font-bold">
+              {highestReachedStageIndex >= 10 ? '5/5' : highestReachedStageIndex >= 8 ? '4/5' : highestReachedStageIndex >= 6 ? '3/5' : highestReachedStageIndex >= 4 ? '2/5' : '1/5'} Kunci
+            </span>
+          </button>
+
+          {/* Lembar Karakter Aksara Button */}
+          <button
+            onClick={() => {
+              soundFX.playChime('gold');
+              setShowCharacterSheetModal(true);
+            }}
+            className="px-2.5 sm:px-3 py-1 rounded-xl bg-[#08182B] hover:bg-[#0E2841] border border-cyan-400/50 text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer shadow-sm transition-all hover:scale-102"
+            title="Lihat Lembar Karakter Resmi Aksara (12 Ekspresi)"
+          >
+            <User className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="hidden md:inline">Karakter Aksara</span>
+          </button>
+
+          {/* World Restoration Simulation */}
+          <button
+            onClick={() => {
+              soundFX.playChime('victory');
+              setShowRestorationModal(true);
+            }}
+            className="px-2.5 py-1 rounded-xl border border-emerald-500/40 bg-[#0E2338] hover:bg-[#163654] text-emerald-300 text-[10px] font-mono font-bold hidden xl:flex items-center gap-1.5 cursor-pointer transition-all shadow-sm"
+            title="Saksikan simulasi pemulihan benua Nusantara dari distorsi glitch"
+          >
+            <Sparkles className="w-3 h-3 text-amber-300" />
+            <span>Pemulihan Benua</span>
+          </button>
         </div>
 
-        {/* Right: Map Display Modes, Cheat Unlock, Sound */}
-        <div className="flex items-center gap-2">
-          {/* Display Mode Toggle (Solves User Request: Clutter vs Panorama) */}
+        {/* Right: Map Pin Filter & Sound */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Display Mode: Clean Pins vs Labeled */}
           <div className="flex items-center bg-[#081321] rounded-xl p-1 border border-[#D4AF37]/30 text-[10px] font-mono font-bold">
             <button
               onClick={() => {
                 soundFX.playChime('click');
                 setMapDisplayMode('clean_pins');
               }}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
                 mapDisplayMode === 'clean_pins'
                   ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
-              title="Mode Pin Ringkas (Bebas Tumpukan Teks)"
+              title="Tampilan Pin Bersih (Tanpa Teks Menumpuk)"
             >
               Pin Bersih
             </button>
@@ -626,48 +763,31 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                 soundFX.playChime('click');
                 setMapDisplayMode('labeled_pins');
               }}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
                 mapDisplayMode === 'labeled_pins'
                   ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
-              title="Tampilkan Label Teks Panjang"
+              title="Tampilkan Nama Pos"
             >
               Label
             </button>
-            <button
-              onClick={() => {
-                soundFX.playChime('click');
-                setMapDisplayMode('panoramic');
-              }}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                mapDisplayMode === 'panoramic'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow font-bold'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-              title="Mode Pemandangan Panorama"
-            >
-              Panorama
-            </button>
           </div>
 
-          {/* Quick Unlock 5 Zones Toggle */}
+          {/* Quick Demo Unlocking Toggle (Allows Reviewers to explore all or test real lock) */}
           <button
             onClick={() => {
-              soundFX.playChime('victory');
-              setAllZonesUnlocked(!allZonesUnlocked);
+              soundFX.playChime('click');
+              setFreeRoamMode(!freeRoamMode);
             }}
-            className={`px-2.5 py-1 rounded-xl border text-[10px] font-mono font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
-              allZonesUnlocked
-                ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.5)]'
-                : 'bg-[#0E2338] hover:bg-[#163654] text-amber-300 border-amber-500/40'
+            className={`p-1.5 rounded-xl border text-xs cursor-pointer transition-all ${
+              freeRoamMode
+                ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
+                : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
             }`}
-            title="Buka seluruh 5 Zona untuk kemudahan navigasi & pengujian"
+            title={freeRoamMode ? 'Mode Bebas Aktif (Semua Kunci Terbuka)' : 'Mode Petualangan Normal (Buka Kunci Bertahap)'}
           >
-            <Unlock className="w-3 h-3" />
-            <span className="hidden md:inline">
-              {allZonesUnlocked ? '5 Zona Terbuka' : 'Buka 5 Zona'}
-            </span>
+            {freeRoamMode ? <Unlock className="w-3.5 h-3.5 text-emerald-400" /> : <Lock className="w-3.5 h-3.5" />}
           </button>
 
           {/* Zoom Controls */}
@@ -675,23 +795,16 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
             <button
               onClick={handleZoomIn}
               className="p-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
-              title="Perbesar"
+              title="Perbesar Peta"
             >
               <Plus className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleZoomOut}
               className="p-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
-              title="Perkecil"
+              title="Perkecil Peta"
             >
               <Minus className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={handleResetZoom}
-              className="p-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
-              title="Reset Zoom"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
             </button>
           </div>
 
@@ -706,16 +819,16 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
         </div>
       </header>
 
-      {/* 2. MAP CANVAS VIEWPORT (WITH 2.5D NUSANTARA ARCHIPELAGO ARTWORK & NON-OVERLAPPING WAYPOINTS) */}
+      {/* 2. MAP CANVAS VIEWPORT */}
       <main className="relative flex-1 w-full h-full overflow-hidden bg-[#071321] cursor-grab active:cursor-grabbing">
-        {/* MAP CONTAINER (WITH PAN & ZOOM) */}
+        {/* MAP CONTAINER (PAN & ZOOM) */}
         <div
           className="relative w-full h-full transition-transform duration-300 ease-out origin-center"
           style={{
             transform: `scale(${zoomLevel}) translate(${panPosition.x}px, ${panPosition.y}px)`,
           }}
         >
-          {/* A. MAP BACKGROUND IMAGE: Khas Nusantara Floating Islands */}
+          {/* Nusantara World Map Artwork */}
           <img
             src={PROSEDURIA_ASSETS.nusantaraWorldMap}
             alt="Peta Benua Proseduria Khas Nusantara"
@@ -723,18 +836,65 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
             referrerPolicy="no-referrer"
           />
 
-          {/* Atmospheric Lighting on Regions */}
+          {/* Atmosphere Lighting */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#050C16]/50 via-transparent to-[#050C16]/30 pointer-events-none" />
           <div className="absolute left-[15%] top-[45%] w-72 h-72 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none animate-pulse" />
           <div className="absolute right-[12%] top-[60%] w-64 h-64 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
           <div className="absolute right-[10%] top-[20%] w-80 h-80 rounded-full bg-orange-600/20 blur-3xl pointer-events-none animate-pulse" />
           <div className="absolute left-[45%] bottom-[15%] w-72 h-72 rounded-full bg-amber-400/15 blur-3xl pointer-events-none" />
 
-          {/* B. REGION BANNERS (CLEANLY ANCHORED, NO COLLISION WITH NODES) */}
+          {/* EXPEDITION TRAIL PATH (CONNECTING WAYPOINTS IN SEQUENCE LIKE A REAL RPG MAP) */}
+          {mapDisplayMode !== 'panoramic' && (
+            <svg className="absolute inset-0 w-full h-full pointer-events-none z-15">
+              <defs>
+                <filter id="trailGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="2.5" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              {MAP_NODES.slice(0, -1).map((node, i) => {
+                const nextNode = MAP_NODES[i + 1];
+                const isNextUnlocked = nextNode.status !== 'LOCKED';
+                const isCurrentCompleted = node.status === 'COMPLETED';
+
+                return (
+                  <g key={`trail-${node.id}-${nextNode.id}`}>
+                    {/* Shadow underlying line */}
+                    <line
+                      x1={`${node.x}%`}
+                      y1={`${node.y}%`}
+                      x2={`${nextNode.x}%`}
+                      y2={`${nextNode.y}%`}
+                      stroke="#030812"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      opacity="0.75"
+                    />
+                    {/* Glowing Route Trail */}
+                    <line
+                      x1={`${node.x}%`}
+                      y1={`${node.y}%`}
+                      x2={`${nextNode.x}%`}
+                      y2={`${nextNode.y}%`}
+                      stroke={isCurrentCompleted ? '#10B981' : isNextUnlocked ? '#00F2FE' : '#475569'}
+                      strokeWidth={isCurrentCompleted || isNextUnlocked ? '3' : '2'}
+                      strokeDasharray={isCurrentCompleted ? '7 5' : isNextUnlocked ? '5 5' : '4 6'}
+                      strokeLinecap="round"
+                      filter={isCurrentCompleted || isNextUnlocked ? 'url(#trailGlow)' : undefined}
+                      opacity={isCurrentCompleted ? 0.95 : isNextUnlocked ? 0.85 : 0.4}
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+          )}
+
+          {/* A. REGION BANNERS (CLEAN EXPLORATION LABELS) */}
           {mapDisplayMode !== 'panoramic' &&
             REGIONS.map((region) => {
               const isSelected = selectedRegionId === region.id;
-              const isUnlocked = region.isUnlocked;
+              const isUnlocked = isRegionUnlocked(region.id, region.requiredStageToUnlock);
 
               return (
                 <div
@@ -748,6 +908,9 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                       setSelectedRegionId(region.id);
                       setSelectedNode(null);
                       setShowPreviewCard(true);
+                      if (!isUnlocked) {
+                        setLockedNotice(`🔒 ${region.name} masih tersegel. Selesaikan misi sebelumnya untuk membuka.`);
+                      }
                     }}
                     className={`group relative flex flex-col items-center cursor-pointer transition-all duration-300 ${
                       isSelected ? 'scale-110 z-30' : 'hover:scale-105 hover:z-25'
@@ -763,7 +926,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                           : 'bg-[#060E18]/85 border-white/20 opacity-75'
                       }`}
                     >
-                      {/* Region Number Emblem */}
+                      {/* Emblem / Key Lock */}
                       <div
                         className="w-5 h-5 rounded-lg flex items-center justify-center font-bold text-xs shrink-0"
                         style={{
@@ -772,21 +935,24 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                         }}
                       >
                         {isUnlocked ? (
-                          <span className="font-['Cinzel'] font-black">
-                            {region.number === 0 ? 'H' : region.number}
-                          </span>
+                          <Compass className="w-3.5 h-3.5" />
                         ) : (
-                          <Lock className="w-3 h-3 text-slate-400" />
+                          <Lock className="w-3 h-3 text-amber-300" />
                         )}
                       </div>
 
-                      {/* Region Label */}
+                      {/* Region Title & Explorer Status */}
                       <div className="text-left">
-                        <div className="font-['Cinzel'] font-black text-xs text-white tracking-wider whitespace-nowrap">
-                          {region.name.toUpperCase()}
+                        <div className="font-['Cinzel'] font-black text-xs text-white tracking-wider whitespace-nowrap flex items-center gap-1.5">
+                          <span>{region.name.toUpperCase()}</span>
+                          {!isUnlocked && (
+                            <span className="px-1.5 py-0.2 rounded bg-amber-500/25 text-amber-300 text-[8px] font-mono font-bold flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" /> TERSEGEL
+                            </span>
+                          )}
                         </div>
-                        <div className="text-[9px] font-mono text-cyan-300 leading-none">
-                          {region.bloomLevel} • {region.progressPercent}%
+                        <div className="text-[9px] font-mono text-cyan-300 leading-none mt-0.5">
+                          {region.adventureStageName} • {isUnlocked ? `${region.progressPercent}% Tuntas` : 'Segel Aktif'}
                         </div>
                       </div>
                     </div>
@@ -795,7 +961,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
               );
             })}
 
-          {/* C. MISSION WAYPOINTS (CIRCULAR GAME BEACONS - ZERO OVERLAP!) */}
+          {/* B. MISSION WAYPOINTS (BEACONS WITH ZERO TECHNICAL CODES) */}
           {mapDisplayMode !== 'panoramic' &&
             MAP_NODES.map((node) => {
               const isCompleted = node.status === 'COMPLETED';
@@ -818,12 +984,15 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                       setSelectedNode(node);
                       setSelectedRegionId(node.regionId);
                       setShowPreviewCard(true);
+                      if (isLocked) {
+                        handleAttemptAction(node);
+                      }
                     }}
                     className={`group relative flex flex-col items-center cursor-pointer transition-all duration-300 ${
                       isSelected ? 'scale-125 z-40' : 'hover:scale-115 hover:z-35'
                     }`}
                   >
-                    {/* 1. Circular RPG Waypoint Beacon (36px x 36px) */}
+                    {/* Circular Waypoint Beacon (38px x 38px) */}
                     <div
                       className={`relative w-9 h-9 rounded-full border-2 flex items-center justify-center shadow-2xl backdrop-blur-md transition-all ${
                         isCompleted
@@ -847,37 +1016,37 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                       )}
                     </div>
 
-                    {/* 2. Compact Sub-badge with Code Only (e.g. M-1.1) */}
+                    {/* Step Name Badge - Clean Adventure Waypoint Name */}
                     <div
-                      className={`mt-1 px-1.5 py-0.2 rounded-md border text-[9px] font-mono font-black shadow-md ${
+                      className={`mt-1 px-2 py-0.5 rounded-full border text-[9px] font-mono font-bold shadow-md whitespace-nowrap transition-all ${
                         isCompleted
                           ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300'
                           : isActive
-                          ? 'bg-[#0D2B45]/90 border-cyan-400 text-cyan-200 shadow-[0_0_8px_rgba(0,242,254,0.4)]'
-                          : 'bg-black/80 border-white/10 text-slate-400'
+                          ? 'bg-[#0D2B45]/95 border-cyan-400 text-cyan-200 shadow-[0_0_10px_rgba(0,242,254,0.5)] scale-105'
+                          : 'bg-black/85 border-white/10 text-slate-400'
                       }`}
                     >
-                      {node.code}
+                      {node.waypointName}
                     </div>
 
-                    {/* 3. Optional Labeled Pill (Only when user explicitly selects 'labeled_pins') */}
+                    {/* Optional Labeled Text (When toggled to 'labeled_pins') */}
                     {mapDisplayMode === 'labeled_pins' && (
                       <div className="mt-0.5 px-2 py-0.5 rounded-lg bg-black/85 border border-white/20 text-[9px] font-mono text-white whitespace-nowrap shadow-lg">
-                        {node.title.slice(0, 16)}...
+                        {node.title.slice(0, 18)}...
                       </div>
                     )}
 
-                    {/* 4. Elegant Hover Tooltip (Floats above pin with zero collision) */}
+                    {/* Clean Hover Tooltip */}
                     {(isHovered || isSelected) && mapDisplayMode !== 'labeled_pins' && (
-                      <div className="absolute -top-16 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-xl bg-[#08182B]/95 border-2 border-cyan-400 shadow-[0_10px_25px_rgba(0,0,0,0.9)] text-left whitespace-nowrap z-50 pointer-events-none animate-fadeIn">
+                      <div className="absolute -top-14 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-xl bg-[#08182B]/95 border-2 border-cyan-400 shadow-[0_10px_25px_rgba(0,0,0,0.9)] text-left whitespace-nowrap z-50 pointer-events-none animate-fadeIn">
                         <div className="flex items-center gap-1.5 text-[10px] font-bold text-white">
-                          <span className="px-1 py-0.2 rounded bg-cyan-400 text-slate-950 font-mono text-[8px]">
-                            {node.code}
+                          <span className="px-1.5 py-0.2 rounded bg-cyan-400 text-slate-950 font-mono text-[8px] font-bold">
+                            {node.waypointName}
                           </span>
                           <span>{node.title}</span>
                         </div>
                         <div className="flex items-center justify-between gap-3 text-[9px] font-mono text-cyan-300 mt-0.5">
-                          <span>{node.bloom}</span>
+                          <span>{node.categoryTitle}</span>
                           <span className="text-amber-300 font-bold">+{node.xp} XP</span>
                         </div>
                       </div>
@@ -887,7 +1056,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
               );
             })}
 
-          {/* D. AKSARA CURRENT LOCATION PIN (DYNAMICALLY MOVES WITH MISSION PROGRESSION) */}
+          {/* C. AKSARA CURRENT LOCATION BEACON (DYNAMICALLY WALKS THE MAP) */}
           {mapDisplayMode !== 'panoramic' && (
             <div
               style={{ left: `${currentAksaraPos.x}%`, top: `${currentAksaraPos.y}%` }}
@@ -903,28 +1072,21 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                 title={`Aksara berada di ${currentAksaraPos.name}. Klik untuk Mendengarkan Panduan!`}
               >
                 {/* Pin Banner */}
-                <div className="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-mono font-black text-[9px] shadow-[0_0_18px_rgba(245,158,11,0.9)] border border-amber-200 flex items-center gap-1 animate-bounce">
-                  <span className="w-3.5 h-3.5 rounded-full bg-slate-950 text-amber-300 flex items-center justify-center text-[8px] font-bold">
-                    A
-                  </span>
-                  <span className="whitespace-nowrap">AKSARA DI SINI • POS TAHAP {highestReachedStageIndex}</span>
+                <div className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-mono font-black text-[9px] shadow-[0_0_18px_rgba(245,158,11,0.9)] border border-amber-200 flex items-center gap-1 animate-bounce">
+                  <Compass className="w-3 h-3 text-slate-950 animate-spin" style={{ animationDuration: '10s' }} />
+                  <span className="whitespace-nowrap font-bold">AKSARA DI SINI</span>
                 </div>
 
-                {/* Sub-label showing current mission station name */}
-                <div className="mt-0.5 px-1.5 py-0.2 rounded-md bg-black/85 border border-amber-400/40 text-[8px] font-mono text-amber-200 whitespace-nowrap shadow-md">
+                {/* Sub-label station name */}
+                <div className="mt-0.5 px-2 py-0.2 rounded-md bg-black/90 border border-amber-400/40 text-[8px] font-mono text-amber-200 whitespace-nowrap shadow-md">
                   {currentAksaraPos.name}
                 </div>
 
                 {/* Avatar Beacon */}
                 <div className="relative mt-0.5">
-                  <div className="w-9 h-9 rounded-full border-2 border-amber-400 bg-amber-500/20 animate-ping absolute inset-0" />
-                  <div className="w-9 h-9 rounded-full border-2 border-amber-300 bg-slate-950 overflow-hidden shadow-2xl flex items-center justify-center ring-2 ring-amber-400/50">
-                    <img
-                      src={PROSEDURIA_ASSETS.aksaraMascot}
-                      alt="Aksara Pemandu Proseduria"
-                      className="w-full h-full object-cover object-top"
-                      referrerPolicy="no-referrer"
-                    />
+                  <div className="w-11 h-11 rounded-full border-2 border-amber-400 bg-amber-500/20 animate-ping absolute inset-0" />
+                  <div className="w-11 h-11 rounded-full border-2 border-amber-300 bg-slate-950 overflow-hidden shadow-2xl flex items-center justify-center ring-2 ring-amber-400/50">
+                    <AksaraBustVisual expression="SENANG" size={44} showCompassBadge={false} />
                   </div>
                 </div>
               </div>
@@ -932,7 +1094,27 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
           )}
         </div>
 
-        {/* 3. FLOATING AKSARA DIALOGUE BOX (TOP-LEFT WITH SPOKEN AUDIO SUPPORT) */}
+        {/* 3. LOCK NOTICE NOTIFICATION TOAST */}
+        {lockedNotice && (
+          <div className="absolute top-4 inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-50 max-w-lg p-3 rounded-2xl bg-[#1A0A0A]/95 border-2 border-rose-500 text-white shadow-2xl backdrop-blur-md animate-slideDown flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-rose-500/20 border border-rose-500 text-rose-400 shrink-0">
+                <Lock className="w-5 h-5" />
+              </div>
+              <p className="text-xs text-rose-100 font-sans leading-snug">
+                {lockedNotice}
+              </p>
+            </div>
+            <button
+              onClick={() => setLockedNotice(null)}
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* 4. FLOATING AKSARA DIALOGUE BOX (TOP-LEFT WITH SPOKEN AUDIO) */}
         {showAksaraSpeech && (
           <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-40 max-w-sm sm:max-w-md animate-slideDown">
             <div className="relative p-3.5 rounded-2xl bg-[#081524]/95 border-2 border-[#D4AF37] shadow-[0_15px_40px_rgba(0,0,0,0.85)] backdrop-blur-md">
@@ -953,17 +1135,17 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                 {/* Aksara Avatar */}
                 <div
                   onClick={handleSpeakAksaraAdvice}
-                  className="w-11 h-11 rounded-xl overflow-hidden border-2 border-[#D4AF37] shrink-0 bg-slate-900 shadow-md cursor-pointer group hover:scale-105 transition-transform relative"
+                  className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-[#D4AF37] shrink-0 bg-slate-900 shadow-md cursor-pointer group hover:scale-105 transition-transform relative flex items-center justify-center"
                   title="Klik untuk Memutar Suara Aksara"
                 >
-                  <img
-                    src={PROSEDURIA_ASSETS.aksaraMascot}
-                    alt="Aksara Pemandu Proseduria"
-                    className="w-full h-full object-cover object-top"
-                    referrerPolicy="no-referrer"
+                  <AksaraBustVisual
+                    expression={isAksaraSpeaking ? 'BERSEMANGAT' : 'NORMAL'}
+                    size={46}
+                    isSpeaking={isAksaraSpeaking}
+                    showCompassBadge={false}
                   />
                   {isAksaraSpeaking && (
-                    <span className="absolute inset-0 bg-cyan-500/20 border-2 border-cyan-400 rounded-xl animate-pulse" />
+                    <span className="absolute inset-0 bg-cyan-500/20 border-2 border-cyan-400 rounded-2xl animate-pulse pointer-events-none" />
                   )}
                 </div>
 
@@ -972,7 +1154,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                   <div className="flex items-center justify-between gap-1.5 mb-1">
                     <div className="flex items-center gap-1.5 text-[#FFE082] text-xs font-mono font-bold">
                       <Compass className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>AKSARA: PANDUAN {currentRegion.name.toUpperCase()}</span>
+                      <span>PANDUAN PENJELAJAH AKSARA</span>
                     </div>
 
                     {/* Spoken Voice Equalizer */}
@@ -989,7 +1171,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                     "{currentRegion.aksaraAdvice}"
                   </p>
 
-                  {/* Voice Button */}
+                  {/* Voice Controls */}
                   <div className="mt-2 flex items-center gap-2">
                     <button
                       onClick={handleSpeakAksaraAdvice}
@@ -1012,7 +1194,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                       )}
                     </button>
                     <span className="text-[9px] font-mono text-slate-400">
-                      Bahasa Indonesia • Kelas IX
+                      Bahasa Indonesia • Petualangan Logika
                     </span>
                   </div>
                 </div>
@@ -1021,7 +1203,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
           </div>
         )}
 
-        {/* 4. CINEMATIC PREVIEW DRAWER (BOTTOM PANEL WITH SIDE-BY-SIDE MISSION LIST - ZERO OVERLAP) */}
+        {/* 5. CINEMATIC PREVIEW DRAWER (BOTTOM EXPEDITION CONTROL PANEL) */}
         {showPreviewCard && (
           <div className="absolute bottom-2 inset-x-2 sm:inset-x-6 z-40 animate-slideUp">
             <div
@@ -1052,17 +1234,23 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                         color: currentRegion.colorHex,
                       }}
                     >
-                      {currentRegion.number === 0 ? 'H' : currentRegion.number}
+                      <Compass className="w-5 h-5" />
                     </div>
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-white/10 text-cyan-300 font-bold">
-                          ZONA {currentRegion.number} • {currentRegion.bloomLevel}
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-cyan-300 font-bold">
+                          {currentRegion.adventureStageName}
                         </span>
-                        {currentRegion.isUnlocked && (
-                          <span className="text-[10px] font-mono text-emerald-400 font-bold">
-                            {currentRegion.progressPercent}% SELESAI
+                        {isCurrentRegionUnlocked ? (
+                          <span className="text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>{currentRegion.progressPercent}% TUNTAS</span>
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-mono text-amber-300 font-bold flex items-center gap-1">
+                            <Lock className="w-3 h-3" />
+                            <span>TERSEGEL</span>
                           </span>
                         )}
                       </div>
@@ -1080,11 +1268,13 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                   </p>
                 </div>
 
-                {/* Center: Clean Side-by-Side Mission Waypoint Cards (5 Cols) */}
+                {/* Center: Mission Waypoint Cards (5 Cols) */}
                 <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l lg:border-r border-white/10 pt-2 lg:pt-0 lg:px-3">
                   <div className="text-[10px] font-mono font-bold text-cyan-300 mb-1.5 flex items-center justify-between">
-                    <span>DAFTAR MISI ({regionMissions.length} MISI):</span>
-                    <span className="text-amber-300">Pilih misi untuk menjelajah</span>
+                    <span>LOKASI MISI ({regionMissions.length} Titik):</span>
+                    <span className="text-amber-300">
+                      {isCurrentRegionUnlocked ? 'Pilih lokasi untuk menjelajah' : 'Wilayah Masih Tersegel'}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1092,6 +1282,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                       const isSelected = selectedNode?.id === mis.id;
                       const isCompleted = mis.status === 'COMPLETED';
                       const isActive = mis.status === 'ACTIVE';
+                      const isLocked = mis.status === 'LOCKED';
 
                       return (
                         <div
@@ -1111,20 +1302,21 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                           }`}
                         >
                           <div className="flex items-center justify-between text-[9px] font-mono mb-1">
-                            <span className="font-bold text-cyan-300">{mis.code}</span>
+                            <span className="font-bold text-cyan-300 truncate">{mis.waypointName}</span>
                             {isCompleted ? (
-                              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                              <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
                             ) : isActive ? (
-                              <Play className="w-2.5 h-2.5 text-cyan-400 fill-current" />
+                              <Play className="w-2.5 h-2.5 text-cyan-400 fill-current shrink-0" />
                             ) : (
-                              <Lock className="w-2.5 h-2.5 text-slate-400" />
+                              <Lock className="w-2.5 h-2.5 text-slate-400 shrink-0" />
                             )}
                           </div>
                           <div className="text-[10px] font-bold text-white truncate">
                             {mis.title}
                           </div>
-                          <div className="text-[8px] font-mono text-slate-400 mt-0.5">
-                            +{mis.xp} XP
+                          <div className="text-[8px] font-mono text-slate-400 mt-0.5 flex items-center justify-between">
+                            <span>{mis.categoryTitle.slice(0, 14)}</span>
+                            <span className="text-amber-300 font-bold">+{mis.xp} XP</span>
                           </div>
                         </div>
                       );
@@ -1135,28 +1327,33 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
                 {/* Right: Embark Action Button (3 Cols) */}
                 <div className="lg:col-span-3 flex flex-col justify-center gap-1.5 pt-2 lg:pt-0">
                   <button
-                    onClick={() => {
-                      soundFX.playChime('gold');
-                      aksaraVoice.stop();
-                      if (selectedNode) {
-                        selectedNode.action();
-                      } else {
-                        currentRegion.action();
-                      }
-                    }}
-                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F5C842] to-[#B38728] hover:brightness-110 text-slate-950 font-['Cinzel'] font-black text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_25px_rgba(212,175,55,0.7)] flex items-center justify-center gap-2 transition-all transform hover:scale-102 active:scale-98 cursor-pointer"
+                    onClick={() => handleAttemptAction(selectedNode)}
+                    className={`w-full py-3 rounded-2xl font-['Cinzel'] font-black text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition-all transform hover:scale-102 active:scale-98 cursor-pointer shadow-lg ${
+                      isCurrentRegionUnlocked
+                        ? 'bg-gradient-to-r from-[#D4AF37] via-[#F5C842] to-[#B38728] hover:brightness-110 text-slate-950 shadow-[0_0_25px_rgba(212,175,55,0.7)]'
+                        : 'bg-gradient-to-r from-slate-800 to-slate-900 border border-white/20 text-slate-400 hover:text-white'
+                    }`}
                   >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>
-                      {selectedNode ? `Masuki ${selectedNode.code}` : `Jelajahi ${currentRegion.name}`}
-                    </span>
-                    <ArrowRight className="w-4 h-4" />
+                    {isCurrentRegionUnlocked ? (
+                      <>
+                        <Play className="w-4 h-4 fill-current" />
+                        <span>{selectedNode ? `Jelajahi ${selectedNode.waypointName}` : `Masuki ${currentRegion.name}`}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-4 h-4 text-slate-400" />
+                        <span>Wilayah Tersegel</span>
+                      </>
+                    )}
                   </button>
 
                   <div className="text-center text-[10px] font-mono text-slate-400">
-                    {selectedNode
-                      ? `${selectedNode.title} • ${selectedNode.bloom}`
-                      : `${currentRegion.shortDesc.slice(0, 45)}...`}
+                    {isCurrentRegionUnlocked
+                      ? selectedNode
+                        ? `${selectedNode.title}`
+                        : `${currentRegion.adventureFocus}`
+                      : `${currentRegion.unlockKeyName} Dibutuhkan`}
                   </div>
                 </div>
               </div>
@@ -1165,14 +1362,27 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
         )}
       </main>
 
-      {/* MODAL: WORLD RESTORATION DIALOG */}
+      {/* 6. MODAL: AKSARA SATCHEL (TAS PENJELAJAH) */}
+      <AksaraSatchelModal
+        isOpen={showSatchelModal}
+        onClose={() => setShowSatchelModal(false)}
+        highestReachedStageIndex={highestReachedStageIndex}
+      />
+
+      {/* 7. MODAL: OFFICIAL CHARACTER SHEET */}
+      <AksaraCharacterSheetModal
+        isOpen={showCharacterSheetModal}
+        onClose={() => setShowCharacterSheetModal(false)}
+      />
+
+      {/* 8. MODAL: WORLD RESTORATION DIALOG */}
       {showRestorationModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
           <div className="relative w-full max-w-2xl rounded-3xl bg-[#08182B] border-2 border-[#D4AF37] p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold font-['Cinzel'] text-[#FFE082] flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-cyan-400" />
-                Simulasi Pemulihan Dunia (Restoration)
+                Simulasi Pemulihan Benua Nusantara
               </h3>
               <button
                 onClick={() => setShowRestorationModal(false)}
