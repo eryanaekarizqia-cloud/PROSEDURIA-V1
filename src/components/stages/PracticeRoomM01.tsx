@@ -498,16 +498,29 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
       }`}
     >
       {/* ========================================================================= */}
+      {/* THEMATIC BACKGROUND SCENE LAYER (Alchemy Laboratory & Nusantara Kitchen)  */}
+      {/* ========================================================================= */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Dynamic ambient backdrops */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#081B33]/80 via-[#040C1A]/90 to-[#02060E] z-0" />
+        <div className="absolute top-10 left-10 w-96 h-96 bg-amber-600/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-10 right-10 w-[450px] h-[350px] bg-cyan-600/10 rounded-full blur-[130px]" />
+        {/* Ornate runic circles in background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-[#D4AF37]/10 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-cyan-400/5 pointer-events-none" />
+      </div>
+
+      {/* ========================================================================= */}
       {/* 1. TOP HEADER & 12-PHASE BREADCRUMB PROGRESS BAR                          */}
       {/* ========================================================================= */}
-      <header className="relative z-30 px-4 py-2 bg-[#040C1A]/95 border-b border-[#D4AF37]/30 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
+      <header className="relative z-30 px-3 sm:px-4 py-2 bg-[#040C1A]/95 border-b border-[#D4AF37]/40 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => {
               soundFX.playChime('click');
               onBackToMap();
             }}
-            className="btn-touch px-3 py-1.5 rounded-xl bg-[#08182B] hover:bg-[#0E2847] border border-[#D4AF37]/50 text-[#FFE082] text-xs font-mono flex items-center gap-1.5 shadow-sm"
+            className="btn-touch px-3 py-1 rounded-xl btn-game-dark text-[#FFE082] text-xs font-mono flex items-center gap-1.5 shadow-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Peta Dunia</span>
@@ -535,7 +548,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
               {PHASES_LIST.find((p) => p.id === phase)?.stepNum}/12: {PHASES_LIST.find((p) => p.id === phase)?.title}
             </div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-[#08182B] border border-[#D4AF37]/60 flex items-center justify-center font-mono font-bold text-sm text-[#FFE082] shadow-inner">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#08182B] border-2 border-[#D4AF37] flex items-center justify-center font-mono font-bold text-sm text-[#FFE082] shadow-inner">
             {PHASES_LIST.find((p) => p.id === phase)?.stepNum}
           </div>
         </div>
@@ -606,14 +619,14 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
               <div className="flex items-center gap-3 pt-2">
                 <button
                   onClick={() => goToPhase('EXPLORATION')}
-                  className="btn-touch px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#F5C842] text-slate-950 font-['Cinzel'] font-black text-xs tracking-wider uppercase shadow-[0_0_20px_rgba(212,175,55,0.6)] hover:brightness-110 flex items-center gap-2"
+                  className="btn-touch px-6 py-2.5 rounded-xl btn-game-gold text-slate-950 font-['Cinzel'] font-black text-xs tracking-wider uppercase flex items-center gap-2 shadow-lg"
                 >
                   <span>Mulai Eksplorasi Meja Kerja</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => speakAksara(aksaraSpeech, aksaraExpr)}
-                  className="btn-touch px-3 py-2 rounded-xl bg-[#0B2440] hover:bg-[#123359] border border-cyan-400/40 text-cyan-300 text-xs font-mono flex items-center gap-1.5"
+                  className="btn-touch px-3 py-2 rounded-xl btn-game-cyan text-slate-950 text-xs font-mono font-bold flex items-center gap-1.5 shadow-md"
                 >
                   <Volume2 className="w-4 h-4" />
                   <span>Dengarkan Aksara</span>
@@ -628,7 +641,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
         {/* =================================================================== */}
         {phase === 'EXPLORATION' && (
           <div className="max-w-5xl mx-auto w-full space-y-4 my-auto animate-fadeIn">
-            <div className="flex items-center justify-between bg-[#08172C]/90 p-3.5 rounded-2xl border border-[#D4AF37]/40 backdrop-blur-md">
+            <div className="flex items-center justify-between adventure-panel-glass p-3.5 rounded-2xl">
               <div>
                 <div className="text-xs font-mono text-cyan-300 uppercase font-bold">TAHAP 2 // EKSPLORASI INTERAKTIF</div>
                 <div className="text-sm font-bold text-white">Amati 5 Objek Prosedur di Meja Kerja</div>
@@ -652,7 +665,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
                   <div
                     key={key}
                     onClick={() => handleInspectObject(key)}
-                    className={`evidence-card p-3.5 flex flex-col items-center text-center cursor-pointer transition-all ${
+                    className={`evidence-card game-card p-3.5 flex flex-col items-center text-center cursor-pointer transition-all ${
                       isSelected ? 'evidence-card-active scale-105' : isInspected ? 'evidence-card-found' : ''
                     }`}
                   >
@@ -677,7 +690,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
 
             {/* Selected Object Detail Panel */}
             {selectedObjectId && (
-              <div className="p-4 rounded-2xl bg-[#040E1C] border border-[#D4AF37]/60 shadow-xl flex items-start gap-3 animate-fadeIn">
+              <div className="p-4 rounded-2xl adventure-panel-glass shadow-xl flex items-start gap-3 animate-fadeIn">
                 <div className="text-3xl p-2 rounded-xl bg-black/40 border border-white/10">
                   {OBJECTS[selectedObjectId].icon}
                 </div>
@@ -701,8 +714,8 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
                 onClick={() => goToPhase('PREPARATION')}
                 className={`btn-touch px-6 py-2.5 rounded-xl font-['Cinzel'] font-bold text-xs tracking-wider uppercase flex items-center gap-2 transition-all ${
                   allExplored
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5C842] text-slate-950 shadow-[0_0_15px_#D4AF37] hover:brightness-110'
-                    : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                    ? 'btn-game-gold text-slate-950 shadow-lg'
+                    : 'bg-slate-800/80 text-slate-500 cursor-not-allowed border border-slate-700 opacity-60'
                 }`}
               >
                 <span>Lanjut ke Persiapan ({exploredCount}/5 Selesai)</span>
@@ -729,7 +742,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Workstation Simulation Area */}
-              <div className="p-5 rounded-2xl bg-[#040C1A] border border-cyan-500/40 flex flex-col items-center justify-center relative min-h-[220px]">
+              <div className="workbench-surface p-5 rounded-2xl border border-cyan-500/40 flex flex-col items-center justify-center relative min-h-[220px]">
                 <div className="text-xs font-mono text-slate-400 mb-3 uppercase tracking-wider">
                   Tatakan Meja Seduh Practice Room
                 </div>
@@ -740,7 +753,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
                     soundFX.playChime('cyan');
                     setCupPosition(cupPosition === 'shelf' ? 'coaster' : 'shelf');
                   }}
-                  className={`w-36 h-36 rounded-full border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all ${
+                  className={`evidentiary-slot w-36 h-36 rounded-full border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all ${
                     cupPosition === 'coaster'
                       ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-[0_0_25px_rgba(212,175,55,0.4)]'
                       : 'border-cyan-400/50 hover:border-cyan-300 bg-cyan-950/20 animate-pulse'
@@ -1072,7 +1085,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
               {/* Interactive Workbench Hotspots Canvas */}
-              <div className="lg:col-span-7 p-5 rounded-2xl bg-[#040C1A] border border-cyan-500/40 relative min-h-[300px] flex flex-col justify-between">
+              <div className="lg:col-span-7 p-5 rounded-2xl workbench-surface evidentiary-drop-zone border border-cyan-500/40 relative min-h-[300px] flex flex-col justify-between">
                 <div className="text-xs font-mono text-slate-400 uppercase">
                   Tempat Kejadian Perkara: Meja Seduh Practice Room
                 </div>
@@ -1089,7 +1102,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
                         'Pilar Bahan & Cara Pelarutan'
                       )
                     }
-                    className={`btn-touch p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
+                    className={`btn-touch game-card p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
                       investigatedHotspots.clump
                         ? 'bg-emerald-950/30 border-emerald-500 text-emerald-200'
                         : 'bg-rose-950/40 border-rose-500 text-rose-200 animate-pulse hover:bg-rose-900/40'
@@ -1114,7 +1127,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
                         'Pilar Takaran Bertahap & Kronologi'
                       )
                     }
-                    className={`btn-touch p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
+                    className={`btn-touch game-card p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
                       investigatedHotspots.spill
                         ? 'bg-emerald-950/30 border-emerald-500 text-emerald-200'
                         : 'bg-rose-950/40 border-rose-500 text-rose-200 animate-pulse hover:bg-rose-900/40'
@@ -1139,7 +1152,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
                         'Pilar Alat & Verba Imperatif'
                       )
                     }
-                    className={`btn-touch p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
+                    className={`btn-touch game-card p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
                       investigatedHotspots.spoon
                         ? 'bg-emerald-950/30 border-emerald-500 text-emerald-200'
                         : 'bg-rose-950/40 border-rose-500 text-rose-200 animate-pulse hover:bg-rose-900/40'
@@ -1164,7 +1177,7 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
                         'Pilar Konjungsi Kronologis'
                       )
                     }
-                    className={`btn-touch p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
+                    className={`btn-touch game-card p-3 rounded-xl border flex flex-col items-start text-left transition-all ${
                       investigatedHotspots.scroll
                         ? 'bg-emerald-950/30 border-emerald-500 text-emerald-200'
                         : 'bg-rose-950/40 border-rose-500 text-rose-200 animate-pulse hover:bg-rose-900/40'
@@ -1635,31 +1648,33 @@ export const PracticeRoomM01: React.FC<PracticeRoomM01Props> = ({
       </main>
 
       {/* ========================================================================= */}
-      {/* 3. PERSISTENT FLOATING AKSARA DIALOGUE DRAWER DOCK (BOTTOM)               */}
+      {/* 3. VISUAL NOVEL RPG DIALOGUE BOX (AKSARAPATRA PROMPT DOCK)                 */}
       {/* ========================================================================= */}
-      <footer className="relative z-30 px-3 sm:px-6 py-2 bg-gradient-to-t from-[#040C1A] via-[#08172C]/95 to-transparent border-t border-[#D4AF37]/40 backdrop-blur-md shrink-0">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
-          {/* Aksara Mini Profile & Speech Bubble */}
+      <footer className="relative z-30 px-3 sm:px-6 py-2 shrink-0">
+        <div className="max-w-5xl mx-auto rpg-dialogue-frame p-2.5 sm:p-3 flex items-center justify-between gap-3 shadow-[0_10px_35px_rgba(0,0,0,0.9)]">
+          {/* Aksara Character Bust & Speech Bubble */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-[#040C1A] border border-[#D4AF37] shrink-0">
-              <AksaraBustVisual expression={aksaraExpr} size={40} showCompassBadge={false} />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-[#0B2544] to-[#040C1A] border-2 border-[#D4AF37] shrink-0 shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center relative">
+              <AksaraBustVisual expression={aksaraExpr} size={50} showCompassBadge={true} />
             </div>
 
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-xs font-bold text-white">Aksara</span>
-                <span className="text-[9px] font-mono text-cyan-300 px-1 rounded bg-cyan-950 border border-cyan-500/30">
-                  Kompas Prosedur
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="font-['Cinzel'] font-black text-xs sm:text-sm text-[#FFE082] tracking-wider">
+                  AKSARAPATRA
+                </span>
+                <span className="text-[9px] font-mono text-cyan-300 px-1.5 py-0.2 rounded bg-cyan-950/80 border border-cyan-400/50">
+                  ✦ Pemandu Logika Nusantara
                 </span>
               </div>
-              <p className="text-[11px] text-slate-200 truncate italic">"{aksaraSpeech}"</p>
+              <p className="text-xs sm:text-sm text-slate-200 truncate italic font-sans">"{aksaraSpeech}"</p>
             </div>
           </div>
 
-          {/* Quick Audio Speech Button */}
+          {/* Audio Speech Button */}
           <button
             onClick={() => speakAksara(aksaraSpeech, aksaraExpr)}
-            className="btn-touch px-3 py-1.5 rounded-xl bg-[#08182B] hover:bg-[#0F2E52] border border-cyan-400/40 text-cyan-300 text-xs font-mono flex items-center gap-1.5 shrink-0 shadow-sm"
+            className="btn-touch px-3 py-1.5 rounded-xl btn-game-cyan text-slate-950 text-xs font-mono flex items-center gap-1.5 shrink-0 shadow-md font-bold"
             title="Dengarkan Suara Aksara"
           >
             <Volume2 className="w-3.5 h-3.5" />

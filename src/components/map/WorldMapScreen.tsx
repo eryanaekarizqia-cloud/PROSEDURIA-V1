@@ -316,21 +316,21 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-[#030814] text-slate-100 overflow-hidden select-none font-sans z-10 flex flex-col">
+    <div className="relative w-full h-full bg-[#030814] text-slate-100 overflow-hidden select-none font-sans flex flex-col">
       {/* ========================================================================= */}
       {/* 1. TOP FLOATING OFFICIAL IDENTITY & NAVIGATION HEADER BAR                 */}
       {/* ========================================================================= */}
-      <header className="absolute top-0 inset-x-0 z-30 px-3 sm:px-6 py-2.5 bg-gradient-to-b from-[#061122]/95 via-[#040C1A]/85 to-transparent flex items-center justify-between pointer-events-auto backdrop-blur-sm">
+      <header className="absolute top-0 inset-x-0 z-30 px-3 sm:px-6 py-2 bg-gradient-to-b from-[#061122]/95 via-[#040C1A]/85 to-transparent flex items-center justify-between pointer-events-auto backdrop-blur-sm">
         {/* Left: Back Button (min 44x44px touch target) */}
         <button
           onClick={() => {
             soundFX.playChime('cyan');
             onBackToTitle();
           }}
-          className="btn-touch px-4 py-2 rounded-xl bg-[#08182B]/90 hover:bg-[#0E2847] border border-[#D4AF37]/50 text-[#FFE082] text-xs font-mono flex items-center gap-2 shadow-lg transition-all"
+          className="btn-touch px-3 py-1.5 rounded-xl btn-game-dark text-[#FFE082] text-xs font-mono flex items-center gap-2 shadow-lg"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Kembali ke Beranda</span>
+          <span className="hidden sm:inline">Beranda</span>
         </button>
 
         {/* Center: Title & Official Subtitle */}
@@ -925,7 +925,7 @@ export const WorldMapScreen: React.FC<WorldMapScreenProps> = ({
               onEnterLembahInformasi();
             }
           }}
-          className="btn-touch px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5C842] to-[#D4AF37] text-slate-950 font-['Cinzel'] font-black text-xs tracking-wider uppercase shadow-[0_0_20px_rgba(212,175,55,0.7)] flex items-center gap-2 hover:brightness-110 transition-all shrink-0"
+          className="btn-touch px-4 py-2 rounded-xl btn-game-gold text-slate-950 font-['Cinzel'] font-black text-xs tracking-wider uppercase flex items-center gap-2 shadow-lg shrink-0"
         >
           <Sparkles className="w-4 h-4 fill-current" />
           <span>Mulai M01 Sekarang</span>

@@ -548,9 +548,13 @@ export const FantasyEvidenceBoard: React.FC<FantasyEvidenceBoardProps> = ({
       <div className="relative z-10 flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col justify-center">
         {viewMode === 'BOARD' ? (
           /* =========================================================================
-             VIEW 1: THE FANTASY INVESTIGATION DESK & CONNECTING CORDS
+             VIEW 1: THE FANTASY INVESTIGATION DESK & CONNECTING CORDS (#evidence-board-desk)
              ========================================================================= */
-          <div ref={deskRef} className="max-w-6xl mx-auto w-full relative">
+          <div
+            id="evidence-board-desk"
+            ref={deskRef}
+            className="max-w-6xl mx-auto w-full relative evidentiary-drop-zone p-3 sm:p-5"
+          >
             {/* 5-STAGE CAUSALITY PIPELINE OVERVIEW (MASTER PROMPT SPEC) */}
             <div className="mb-3 p-2 sm:p-2.5 rounded-xl bg-[#0E0705]/90 border border-[#D4AF37]/30 shadow-md">
               <div className="flex items-center justify-between gap-2 overflow-x-auto text-[10px] font-mono font-bold uppercase tracking-wider py-0.5">
@@ -680,7 +684,7 @@ export const FantasyEvidenceBoard: React.FC<FantasyEvidenceBoardProps> = ({
                         style={{
                           transform: `rotate(${ev.tiltDeg}deg)`,
                         }}
-                        className={`relative rounded-xl p-3.5 sm:p-4 transition-all duration-300 cursor-pointer ${
+                        className={`evidence-card game-card relative rounded-xl p-3.5 sm:p-4 transition-all duration-300 cursor-pointer ${
                           isSelected
                             ? 'scale-[1.03] z-30 ring-2 ring-[#00F2FE] shadow-[0_15px_30px_rgba(0,242,254,0.35)]'
                             : isMatched
@@ -879,7 +883,7 @@ export const FantasyEvidenceBoard: React.FC<FantasyEvidenceBoardProps> = ({
                         key={pillar.id}
                         id={`pillar-node-${pillar.id}`}
                         onClick={() => handleSelectPillar(pillar.id)}
-                        className={`relative rounded-xl p-3.5 sm:p-4 transition-all duration-300 cursor-pointer ${
+                        className={`evidentiary-slot relative rounded-xl p-3.5 sm:p-4 transition-all duration-300 cursor-pointer ${
                           matchedEvId
                             ? 'bg-gradient-to-r from-[#0C2238] to-[#08182B] border-2 border-emerald-400/80 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
                             : isCandidate
@@ -1180,9 +1184,9 @@ export const FantasyEvidenceBoard: React.FC<FantasyEvidenceBoardProps> = ({
               soundFX.playChime('victory');
               onComplete();
             }}
-            className={`px-6 py-2.5 rounded-xl font-['Cinzel'] font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 transition-all ${
+            className={`btn-touch px-6 py-2.5 rounded-xl font-['Cinzel'] font-black text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 transition-all ${
               isAllConnected
-                ? 'bg-gradient-to-r from-[#D4AF37] via-[#F5C842] to-[#D4AF37] text-slate-950 shadow-[0_0_25px_rgba(212,175,55,0.6)] hover:brightness-110 hover:scale-[1.02] cursor-pointer'
+                ? 'btn-game-gold text-slate-950 shadow-[0_0_25px_rgba(212,175,55,0.6)] cursor-pointer'
                 : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
             }`}
           >

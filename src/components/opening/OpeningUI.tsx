@@ -293,13 +293,13 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
 
           {/* Action CTAs */}
           <div className="pt-2 flex flex-wrap items-center gap-3">
-            {/* Start Game Button (Golden Glow) */}
+            {/* Start Game Button (Golden Glow 3D Skeuomorphic) */}
             <button
               onClick={() => {
                 soundFX.playChime('gold');
                 onStartAdventure();
               }}
-              className="px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F5C842] to-[#B38728] hover:brightness-110 text-slate-950 font-['Cinzel'] font-black text-sm tracking-wider uppercase shadow-[0_0_35px_rgba(212,175,55,0.7)] flex items-center gap-2.5 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+              className="btn-touch px-6 sm:px-8 py-3 rounded-2xl btn-game-gold text-slate-950 font-['Cinzel'] font-black text-sm tracking-wider uppercase flex items-center gap-2.5 shadow-xl cursor-pointer"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Mulai Petualangan</span>
@@ -312,9 +312,9 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
                 soundFX.playChime('cyan');
                 onOpenProfile();
               }}
-              className="px-4 py-3.5 rounded-2xl bg-[#0D2B45]/90 hover:bg-[#153B5C] border border-cyan-400/50 hover:border-cyan-300 text-cyan-200 font-mono font-bold text-xs flex items-center gap-2 backdrop-blur-md shadow-lg transition-all cursor-pointer"
+              className="btn-touch px-4 py-3 rounded-2xl btn-game-cyan text-slate-950 font-mono font-bold text-xs flex items-center gap-2 shadow-lg cursor-pointer"
             >
-              <User className="w-4 h-4 text-cyan-400" />
+              <User className="w-4 h-4 text-slate-950" />
               <span>Profil Pemain</span>
             </button>
 
@@ -325,7 +325,7 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
                   soundFX.playChime('victory');
                   onOpenBadges();
                 }}
-                className="px-3.5 py-3.5 rounded-2xl bg-[#08182B]/80 hover:bg-[#0E2841] border border-[#D4AF37]/40 text-[#FFE082] text-xs font-mono font-bold flex items-center gap-1.5 backdrop-blur-md transition-all cursor-pointer"
+                className="btn-touch px-3.5 py-3 rounded-2xl btn-game-dark text-[#FFE082] text-xs font-mono font-bold flex items-center gap-1.5 shadow-md cursor-pointer"
                 title="Buka Koleksi 6 Lencana & Piala"
               >
                 <Award className="w-4 h-4 text-amber-400" />
@@ -347,7 +347,7 @@ export const OpeningUI: React.FC<OpeningUIProps> = ({
           {/* A. INTERACTIVE SPEECH BUBBLE ABOVE AKSARA */}
           {speechBubbleOpen && (
             <div className="relative mb-2 w-72 sm:w-80 animate-slideDown">
-              <div className="p-3 sm:p-4 rounded-2xl bg-[#08182B]/95 border-2 border-[#D4AF37] shadow-[0_15px_35px_rgba(0,0,0,0.85)] backdrop-blur-xl text-left">
+              <div className="rpg-dialogue-frame p-3 sm:p-4 shadow-[0_15px_35px_rgba(0,0,0,0.9)] text-left">
                 {/* Close speech bubble button */}
                 <button
                   onClick={() => setSpeechBubbleOpen(false)}

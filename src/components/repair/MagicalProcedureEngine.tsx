@@ -716,7 +716,7 @@ export const MagicalProcedureEngine: React.FC<MagicalProcedureEngineProps> = ({
 
                   {/* Main Node Card */}
                   <div
-                    className={`relative z-10 p-3 sm:p-3.5 rounded-2xl border-2 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
+                    className={`procedure-card game-card relative z-10 p-3 sm:p-3.5 rounded-2xl border-2 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
                       isExecutingNow
                         ? 'border-[#00F2FE] bg-cyan-950/70 shadow-[0_0_25px_rgba(0,242,254,0.5)] scale-[1.01]'
                         : isFailedHere
@@ -841,10 +841,10 @@ export const MagicalProcedureEngine: React.FC<MagicalProcedureEngineProps> = ({
             <button
               disabled={engineState === 'RUNNING'}
               onClick={handleRunSequence}
-              className={`px-6 py-3 rounded-2xl font-['Cinzel'] font-black text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 shadow-2xl transition-all cursor-pointer ${
+              className={`btn-touch px-6 py-3 rounded-2xl font-['Cinzel'] font-black text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2 shadow-2xl transition-all cursor-pointer ${
                 engineState === 'RUNNING'
                   ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-wait'
-                  : 'bg-gradient-to-r from-[#D4AF37] via-[#FFE082] to-[#D4AF37] text-slate-950 hover:brightness-110 shadow-[0_0_25px_rgba(212,175,55,0.6)] hover:scale-105 active:scale-95'
+                  : 'btn-game-gold text-slate-950 shadow-[0_0_25px_rgba(212,175,55,0.6)]'
               }`}
             >
               <Play className="w-4 h-4 fill-current" />

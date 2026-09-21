@@ -3,9 +3,11 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #050B14;
+    background-color: #02060D;
     color: #F1F5F9;
-    overflow-x: hidden;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3, .font-cinzel {
@@ -19,138 +21,558 @@
 }
 
 /* ==========================================================================
-   PROSEDURIA VISUAL FOUNDATION: INDONESIAN TROPICAL FANTASY + PREMIUM HUD
+   1. FIXED 16:9 GAME STAGE & LETTERBOX VIEWPORT
    ========================================================================== */
 
-:root {
-  --color-midnight: #050B14;
-  --color-navy-deep: #081326;
-  --color-navy-card: #0D1E36;
-  --color-blue-royal: #13325B;
-  --color-gold-bright: #FFE082;
-  --color-gold-metallic: #D4AF37;
-  --color-gold-dark: #8C6D23;
-  --color-cyan-glow: #00F2FE;
-  --color-cyan-deep: #0891B2;
-  --color-emerald-glow: #10B981;
-  --color-emerald-deep: #065F46;
-  --color-parchment-bg: #FAF5E8;
-  --color-parchment-border: #D6C29E;
-  --color-parchment-text: #2A2015;
+/* Outer screen letterbox container: deep cosmic void */
+.game-screen-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #02050A;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(13, 33, 61, 0.4) 0%, rgba(2, 5, 10, 0.98) 80%),
+    radial-gradient(circle at 20% 20%, rgba(0, 242, 254, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
 }
 
-/* Premium Fantasy Game HUD Container */
-.game-hud-frame {
+/* FIXED 16:9 GAME STAGE: Strictly Centered, Locked 16:9 Aspect Ratio, Zero Scrolling */
+#game-stage,
+#game-viewport {
   position: relative;
-  background: linear-gradient(180deg, rgba(8, 19, 38, 0.95) 0%, rgba(5, 11, 20, 0.98) 100%);
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  aspect-ratio: 16 / 9;
+  margin: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #061120;
+  background: 
+    linear-gradient(rgba(3, 10, 22, 0.4), rgba(2, 6, 15, 0.65)),
+    url('./assets/images/bg_stage_m01.png') center/cover no-repeat;
+  box-shadow: 
+    0 0 60px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(212, 175, 55, 0.35),
+    inset 0 0 40px rgba(0, 0, 0, 0.8);
+  border: 2px solid rgba(212, 175, 55, 0.65);
+}
+
+@media (min-width: 640px) {
+  #game-stage,
+  #game-viewport {
+    border-radius: 18px;
+  }
+}
+
+/* 16:9 Game Frame Runic Corners */
+.game-viewport-corner-tl {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  border-top: 3px solid #FFE082;
+  border-left: 3px solid #FFE082;
+  pointer-events: none;
+  z-index: 45;
+}
+
+.game-viewport-corner-tr {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-top: 3px solid #FFE082;
+  border-right: 3px solid #FFE082;
+  pointer-events: none;
+  z-index: 45;
+}
+
+.game-viewport-corner-bl {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  border-bottom: 3px solid #FFE082;
+  border-left: 3px solid #FFE082;
+  pointer-events: none;
+  z-index: 45;
+}
+
+.game-viewport-corner-br {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-bottom: 3px solid #FFE082;
+  border-right: 3px solid #FFE082;
+  pointer-events: none;
+  z-index: 45;
+}
+
+/* ==========================================================================
+   2. RPG STYLE DIALOGUE DRAWER (#dialogue-drawer)
+   ========================================================================== */
+
+#dialogue-drawer,
+.dialogue-drawer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  padding: 0.75rem 1.25rem 0.875rem 1.25rem;
+  background: linear-gradient(180deg, transparent 0%, rgba(2, 6, 15, 0.85) 30%, rgba(2, 6, 15, 0.98) 100%);
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem;
+  pointer-events: auto;
+  user-select: none;
+}
+
+/* Left Side: Avatar Aksara Standing with Dynamic Pose Transitions */
+#aksara-avatar,
+.aksara-avatar-stand {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.85));
+}
+
+#aksara-avatar:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+
+#aksara-avatar.pose-speaking {
+  filter: drop-shadow(0 0 20px rgba(0, 242, 254, 0.6)) drop-shadow(0 8px 24px rgba(0, 0, 0, 0.85));
+}
+
+/* Right Side: Narrative Text Box with Glassmorphism / RPG Texture Framing */
+#dialogue-narrative-box,
+.dialogue-narrative-box {
+  flex: 1;
+  min-width: 0;
+  background: rgba(8, 23, 44, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 2px solid rgba(212, 175, 55, 0.8);
+  box-shadow: 
+    0 14px 36px rgba(0, 0, 0, 0.85),
+    inset 0 1px 1px rgba(255, 235, 150, 0.3),
+    0 0 24px rgba(212, 175, 55, 0.25);
+  border-radius: 1.25rem;
+  padding: 1.125rem 1.25rem 0.875rem 1.25rem;
+  position: relative;
+  color: #E2E8F0;
+}
+
+/* Gold Framed Name Tag "Aksara" */
+#dialogue-name-tag,
+.dialogue-name-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #FFE082 0%, #D4AF37 50%, #996515 100%);
+  color: #030814;
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.875rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid #FFF5C0;
+  box-shadow: 
+    0 2px 8px rgba(212, 175, 55, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  position: absolute;
+  top: -0.75rem;
+  left: 1.25rem;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   3. SKEUOMORPHIC GAME ELEMENTS (Cards & 3D Arcade Buttons)
+   ========================================================================== */
+
+/* Procedure & Ingredient Cards with Physical Thickness & Lift */
+.game-card,
+.procedure-card,
+.ingredient-card,
+.evidence-card {
+  position: relative;
+  background: linear-gradient(145deg, #0F2747 0%, #08172C 60%, #040E1C 100%);
   border: 1.5px solid rgba(212, 175, 55, 0.45);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 224, 130, 0.25), 0 0 20px rgba(0, 242, 254, 0.12);
+  border-top: 1.5px solid rgba(255, 235, 170, 0.5);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.6);
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
-/* Ornate Fantasy Panel with Beveled Rim and Subtle Inner Glow */
-.fantasy-panel {
-  background: radial-gradient(ellipse at top left, rgba(19, 50, 91, 0.5) 0%, rgba(8, 19, 38, 0.95) 70%);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 0 25px rgba(212, 175, 55, 0.08);
-  border-radius: 18px;
+.game-card:hover,
+.procedure-card:hover,
+.ingredient-card:hover,
+.evidence-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 14px 28px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(212, 175, 55, 0.4);
+  border-color: #FFE082;
 }
 
-/* Ancient Indonesian Lontar / Expedition Parchment Panel */
-.parchment-panel {
-  background: linear-gradient(135deg, #FAF5E8 0%, #F3EBD4 100%);
-  color: #2A2015;
-  border: 1.5px solid #D4AF37;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(180, 130, 60, 0.15);
+.game-card:active,
+.procedure-card:active,
+.ingredient-card:active,
+.evidence-card:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 3D Action Buttons: 2px press motion with thinning shadow */
+.game-btn,
+.btn-action,
+.btn-game-gold,
+.btn-game-cyan,
+.btn-game-emerald,
+.btn-game-ruby,
+.btn-game-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.game-btn:active,
+.btn-action:active,
+.btn-game-gold:active,
+.btn-game-cyan:active,
+.btn-game-emerald:active,
+.btn-game-ruby:active,
+.btn-game-dark:active {
+  transform: translateY(2px) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Touch-friendly base */
+.btn-touch {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 3D Gold Button (Primary Game Action / Milestone) */
+.btn-game-gold {
+  background: linear-gradient(180deg, #FFF0A8 0%, #F5C842 22%, #D4AF37 68%, #9E7D1C 100%);
+  border: 1.5px solid #FFF8D6;
+  border-bottom: 4px solid #634706;
   border-radius: 14px;
+  color: #1A1202;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 5px 16px rgba(212, 175, 55, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
-/* Runic HUD Corner Brackets */
-.hud-corner-tl {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  width: 14px;
-  height: 14px;
-  border-top: 2px solid #D4AF37;
-  border-left: 2px solid #D4AF37;
-  pointer-events: none;
-}
-.hud-corner-tr {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 14px;
-  height: 14px;
-  border-top: 2px solid #D4AF37;
-  border-right: 2px solid #D4AF37;
-  pointer-events: none;
-}
-.hud-corner-bl {
-  position: absolute;
-  bottom: 6px;
-  left: 6px;
-  width: 14px;
-  height: 14px;
-  border-bottom: 2px solid #D4AF37;
-  border-left: 2px solid #D4AF37;
-  pointer-events: none;
-}
-.hud-corner-br {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  width: 14px;
-  height: 14px;
-  border-bottom: 2px solid #D4AF37;
-  border-right: 2px solid #D4AF37;
-  pointer-events: none;
+.btn-game-gold:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 7px 22px rgba(212, 175, 55, 0.6),
+    0 3px 6px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
 }
 
-/* Glowing Item Crystals & Badges */
-.badge-gold-rune {
-  background: linear-gradient(135deg, #F5C842 0%, #D4AF37 50%, #8C6D23 100%);
-  color: #050B14;
-  border: 1px solid #FFE082;
-  box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
-  font-weight: 700;
+.btn-game-gold:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+  box-shadow: 
+    0 2px 8px rgba(212, 175, 55, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.badge-emerald-rune {
-  background: linear-gradient(135deg, #34D399 0%, #10B981 50%, #065F46 100%);
+/* 3D Cyan Button (Analysis, Scanner, Tech) */
+.btn-game-cyan {
+  background: linear-gradient(180deg, #BAE6FD 0%, #38BDF8 22%, #00F2FE 68%, #0284C7 100%);
+  border: 1.5px solid #E0F2FE;
+  border-bottom: 4px solid #034E7B;
+  border-radius: 14px;
+  color: #032138;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 5px 16px rgba(0, 242, 254, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.btn-game-cyan:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 7px 22px rgba(0, 242, 254, 0.6),
+    0 3px 6px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+}
+
+.btn-game-cyan:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+  box-shadow: 
+    0 2px 8px rgba(0, 242, 254, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 3D Emerald Button (Validation, Success, Restored) */
+.btn-game-emerald {
+  background: linear-gradient(180deg, #A7F3D0 0%, #34D399 22%, #10B981 68%, #047857 100%);
+  border: 1.5px solid #D1FAE5;
+  border-bottom: 4px solid #064E3B;
+  border-radius: 14px;
+  color: #022C22;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 5px 16px rgba(16, 185, 129, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.btn-game-emerald:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 7px 22px rgba(16, 185, 129, 0.6),
+    0 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+.btn-game-emerald:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* 3D Ruby Button (Glitch Alert, Error, Danger) */
+.btn-game-ruby {
+  background: linear-gradient(180deg, #FECDD3 0%, #FB7185 22%, #E11D48 68%, #9F1239 100%);
+  border: 1.5px solid #FFE4E6;
+  border-bottom: 4px solid #4C0519;
+  border-radius: 14px;
   color: #FFFFFF;
-  border: 1px solid #6EE7B7;
-  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+  font-weight: 800;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+  box-shadow: 
+    0 5px 16px rgba(225, 29, 72, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.btn-game-ruby:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-game-ruby:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+/* 3D Dark Obsidian Button (Secondary, Neutral Options) */
+.btn-game-dark {
+  background: linear-gradient(180deg, #1E2B3E 0%, #0F1C2E 60%, #08111D 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  border-bottom: 4px solid #03070E;
+  border-radius: 14px;
+  color: #E2E8F0;
   font-weight: 700;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
 
-.badge-cyan-rune {
-  background: linear-gradient(135deg, #38BDF8 0%, #00F2FE 50%, #0369A1 100%);
-  color: #050B14;
-  border: 1px solid #BAE6FD;
-  box-shadow: 0 0 14px rgba(0, 242, 254, 0.45);
-  font-weight: 700;
+.btn-game-dark:hover {
+  border-color: #D4AF37;
+  color: #FFFFFF;
+  transform: translateY(-1px);
 }
 
-/* Atmospheric Tropical Lighting & Vignette */
-.cinematic-vignette {
-  box-shadow: inset 0 0 100px rgba(5, 11, 20, 0.85), inset 0 0 180px rgba(0, 0, 0, 0.95);
+.btn-game-dark:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
 }
 
-/* Custom Gold & Cyan Fantasy Scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+/* ==========================================================================
+   3. TANGIBLE GAME TOKENS & PHYSICAL CARDS (Tactile Adventure Assets)
+   ========================================================================== */
+
+/* Physical Procedure Token Card */
+.game-token-card {
+  position: relative;
+  background: linear-gradient(160deg, #0F2747 0%, #0A1B33 60%, #051020 100%);
+  border: 2px solid rgba(212, 175, 55, 0.5);
+  border-radius: 18px;
+  box-shadow: 
+    0 12px 28px -4px rgba(0, 0, 0, 0.8),
+    0 4px 8px -2px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  touch-action: manipulation;
 }
-::-webkit-scrollbar-track {
-  background: rgba(5, 11, 20, 0.95);
+
+.game-token-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: #F5C842;
+  box-shadow: 
+    0 20px 35px rgba(0, 0, 0, 0.85),
+    0 0 20px rgba(212, 175, 55, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #D4AF37 0%, #00F2FE 100%);
-  border-radius: 4px;
-  border: 1px solid rgba(5, 11, 20, 0.8);
+
+.game-token-card:active {
+  transform: scale(1.04) rotate(0.5deg);
+  box-shadow: 
+    0 24px 40px rgba(0, 0, 0, 0.9),
+    0 0 25px rgba(0, 242, 254, 0.5);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #FFE082 0%, #38BDF8 100%);
+
+/* Material / Ingredient Token Badge */
+.game-ingredient-token {
+  background: radial-gradient(circle at 35% 35%, #184172 0%, #0B223D 70%, #051120 100%);
+  border: 2px solid #D4AF37;
+  border-radius: 18px;
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.75),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25),
+    0 0 12px rgba(212, 175, 55, 0.2);
+  transition: all 0.2s ease;
+}
+
+.game-ingredient-token:hover {
+  transform: scale(1.05);
+  border-color: #FFE082;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.85), 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+/* ==========================================================================
+   4. ADVENTURE GLASSMORPHISM & THEMED PANELS (Meja Bahan, Bukti, Kotak Soal)
+   ========================================================================== */
+
+/* Frosted Obsidian Glass Adventure Panel */
+.adventure-panel-glass {
+  background: linear-gradient(135deg, rgba(11, 33, 61, 0.88) 0%, rgba(5, 17, 34, 0.95) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border-radius: 20px;
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.75),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 0 25px rgba(212, 175, 55, 0.12);
+}
+
+/* Meja Bahan (Polished Mahogany Lab Bench with Gold Inlay) */
+.meja-bahan-panel {
+  background: 
+    radial-gradient(ellipse at top, rgba(38, 22, 12, 0.95) 0%, rgba(15, 8, 4, 0.98) 100%);
+  border: 2.5px solid #8C6D23;
+  border-radius: 22px;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.9),
+    inset 0 2px 4px rgba(255, 224, 130, 0.25),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Papan Bukti (Detective Corkboard & Evidence Grid) */
+#evidence-board-desk,
+.evidence-corkboard,
+.evidentiary-drop-zone,
+.workbench-surface {
+  position: relative;
+  background: 
+    radial-gradient(ellipse at 50% 30%, rgba(35, 60, 95, 0.4) 0%, rgba(5, 14, 28, 0.95) 75%),
+    linear-gradient(180deg, #150E07 0%, #0B0703 100%);
+  border: 3px solid #8C6D23;
+  border-radius: 20px;
+  box-shadow: 
+    inset 0 0 50px rgba(0, 0, 0, 0.95),
+    inset 0 2px 4px rgba(255, 224, 130, 0.3),
+    0 16px 45px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+}
+
+/* Evidentiary Drop Zone Slot */
+.evidentiary-slot {
+  border: 2px dashed rgba(212, 175, 55, 0.45);
+  background: rgba(4, 12, 24, 0.7);
+  border-radius: 14px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.evidentiary-slot:hover,
+.evidentiary-slot.active-drop {
+  border-color: #00F2FE;
+  background: rgba(0, 242, 254, 0.12);
+  box-shadow: 
+    0 0 16px rgba(0, 242, 254, 0.4),
+    inset 0 0 10px rgba(0, 242, 254, 0.2);
+  transform: scale(1.02);
+}
+
+/* Ancient Indonesian Lontar / Scroll Panel */
+.parchment-panel {
+  background: linear-gradient(135deg, #FAF4E4 0%, #EFE3C6 100%);
+  color: #24190D;
+  border: 2px solid #D4AF37;
+  box-shadow: 
+    0 14px 35px rgba(0, 0, 0, 0.7),
+    inset 0 0 30px rgba(180, 130, 60, 0.2);
+  border-radius: 16px;
+}
+
+/* ==========================================================================
+   5. VISUAL NOVEL RPG DIALOGUE BOX STYLING
+   ========================================================================== */
+
+.rpg-dialogue-frame {
+  background: linear-gradient(180deg, rgba(8, 23, 44, 0.96) 0%, rgba(4, 12, 24, 0.98) 100%);
+  border: 2px solid rgba(212, 175, 55, 0.85);
+  border-radius: 22px;
+  box-shadow: 
+    0 16px 45px rgba(0, 0, 0, 0.85),
+    0 0 30px rgba(212, 175, 55, 0.3),
+    inset 0 1px 1px rgba(255, 224, 130, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* Glitch Animation Effect */
@@ -181,10 +603,6 @@
   }
 }
 
-.glitch-effect {
-  position: relative;
-}
-
 .glitch-effect::before,
 .glitch-effect::after {
   content: attr(data-text);
@@ -209,50 +627,80 @@
   animation: glitch-anim 2.5s infinite linear alternate-reverse;
 }
 
-/* ==========================================================================
-   MASTER PROMPT PROSEDURIA: 16:9 SHELL, 44PX BUTTONS, EVIDENCE & STATES
-   ========================================================================== */
-
-/* 16:9 Container Shell */
-.shell-16-9 {
-  width: 100%;
-  max-width: 1440px;
-  aspect-ratio: 16 / 9;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  overflow: hidden;
+/* State Shakes & Glows */
+@keyframes shake-error {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(3px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
-@media (max-aspect-ratio: 16/9) {
-  .shell-16-9-fit {
-    width: 100vw;
-    height: 56.25vw;
+.state-salah,
+.state-error {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), inset 0 0 15px rgba(239, 68, 68, 0.2) !important;
+  animation: shake-error 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes pulse-emerald {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), inset 0 0 15px rgba(16, 185, 129, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(16, 185, 129, 0.7), inset 0 0 25px rgba(16, 185, 129, 0.3);
   }
 }
 
-@media (min-aspect-ratio: 16/9) {
-  .shell-16-9-fit {
-    height: 100vh;
-    width: 177.78vh;
+.state-pulih,
+.state-restored {
+  border-color: #10B981 !important;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.2) !important;
+  animation: pulse-emerald 3s infinite ease-in-out;
+}
+
+@keyframes victory-halo {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.5), 0 0 10px rgba(0, 242, 254, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(212, 175, 55, 0.85), 0 0 25px rgba(0, 242, 254, 0.6);
   }
 }
 
-/* Touch-Friendly Responsive Button System (Minimum 44px x 44px WCAG / Mobile Target) */
-.btn-touch {
-  min-width: 44px;
-  min-height: 44px;
-  display: inline-flex;
+.state-berhasil,
+.state-success {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 15px rgba(0, 242, 254, 0.4), inset 0 0 20px rgba(212, 175, 55, 0.2) !important;
+  animation: victory-halo 2.5s infinite ease-in-out;
+}
+
+/* Modal Overlay Backdrop */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(2, 6, 15, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 50;
+  display: flex;
   align-items: center;
   justify-content: center;
-  touch-action: manipulation;
-  user-select: none;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-touch:active {
-  transform: scale(0.96);
+/* Custom Gold & Cyan Fantasy Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(4, 10, 18, 0.95);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #D4AF37 0%, #00F2FE 100%);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFE082 0%, #38BDF8 100%);
 }
 
 /* Evidence Card Styling */
@@ -302,55 +750,6 @@
   border-radius: inherit;
 }
 
-/* 2. PULIH (Restored / Healing) */
-.state-pulih,
-.state-restored {
-  border-color: #10B981 !important;
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.2) !important;
-  animation: pulse-emerald 3s infinite ease-in-out;
-}
-
-@keyframes pulse-emerald {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), inset 0 0 15px rgba(16, 185, 129, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(16, 185, 129, 0.7), inset 0 0 25px rgba(16, 185, 129, 0.3);
-  }
-}
-
-/* 3. SALAH / ANOMALI (Glitch / Error) */
-.state-salah,
-.state-error {
-  border-color: #EF4444 !important;
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), inset 0 0 15px rgba(239, 68, 68, 0.2) !important;
-  animation: shake-error 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-
-@keyframes shake-error {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
-  40%, 60% { transform: translate3d(3px, 0, 0); }
-}
-
-/* 4. BERHASIL (Success / Victory) */
-.state-berhasil,
-.state-success {
-  border-color: #D4AF37 !important;
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 15px rgba(0, 242, 254, 0.4), inset 0 0 20px rgba(212, 175, 55, 0.2) !important;
-  animation: victory-halo 2.5s infinite ease-in-out;
-}
-
-@keyframes victory-halo {
-  0%, 100% {
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.5), 0 0 10px rgba(0, 242, 254, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 20px rgba(0, 242, 254, 0.6);
-  }
-}
-
 /* Dialogue Drawer Component */
 .dialogue-drawer {
   background: linear-gradient(180deg, rgba(8, 23, 44, 0.96) 0%, rgba(4, 11, 22, 0.98) 100%);
@@ -359,15 +758,4 @@
   backdrop-filter: blur(16px);
 }
 
-/* Modal Overlay Backdrop */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(2, 6, 15, 0.85);
-  backdrop-filter: blur(8px);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 

@@ -43,11 +43,11 @@ export const StageStepperNav: React.FC<StageStepperNavProps> = ({
   const currentIndex = STAGE_CONFIGS.findIndex((s) => s.id === currentStage);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#050D1A]/95 backdrop-blur-md border-b border-[#D4AF37]/50 shadow-[0_6px_28px_rgba(0,0,0,0.8)]">
+    <header className="relative w-full z-40 bg-[#050D1A]/95 backdrop-blur-md border-b border-[#D4AF37]/60 shadow-[0_6px_25px_rgba(0,0,0,0.85)] shrink-0">
       {/* Cyan energy conduit trace line */}
-      <div className="absolute bottom-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-cyan-400/50 via-amber-400/40 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 via-amber-400 to-transparent pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-5 h-14 flex items-center justify-between gap-2.5">
+      <div className="w-full px-3 sm:px-5 h-12 sm:h-13 flex items-center justify-between gap-2">
         {/* Left: Brand Identity (PROSEDURIA) & Current Stage */}
         <div className="flex items-center gap-2.5 min-w-0">
           <button
@@ -58,8 +58,8 @@ export const StageStepperNav: React.FC<StageStepperNavProps> = ({
             className="flex items-center gap-2 group cursor-pointer"
             title="Kembali ke Beranda Proseduria"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F5C842] via-[#D4AF37] to-[#78350F] border border-[#FFE082] flex items-center justify-center text-slate-950 font-bold group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-              <span className="text-sm font-serif">✦</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#FFE082] via-[#D4AF37] to-[#8C6D23] border border-[#FFF5C0] flex items-center justify-center text-slate-950 font-bold group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+              <span className="text-xs sm:text-sm font-serif">✦</span>
             </div>
             <div className="hidden sm:flex flex-col text-left">
               <span className="font-['Cinzel'] font-black text-xs tracking-widest text-[#FFE082] group-hover:text-white transition-colors">
@@ -74,8 +74,8 @@ export const StageStepperNav: React.FC<StageStepperNavProps> = ({
           <ChevronRight className="w-3.5 h-3.5 text-[#D4AF37]/50 hidden md:block" />
 
           {/* Current Stage Pill */}
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#0B1E38]/90 border border-[#D4AF37]/50 shadow-inner">
-            <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+          <div className="flex items-center gap-2 px-2.5 py-0.5 sm:py-1 rounded-full bg-[#0B1E38]/90 border border-[#D4AF37]/50 shadow-inner">
+            <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
               {currentConfig.bloomTaxonomy}
             </span>
             <span className="text-xs font-semibold text-slate-100 truncate max-w-[120px] sm:max-w-xs">
@@ -133,10 +133,10 @@ export const StageStepperNav: React.FC<StageStepperNavProps> = ({
                 soundFX.playChime('victory');
                 onOpenBadges();
               }}
-              className="p-1.5 sm:px-2.5 sm:py-1 rounded-lg bg-gradient-to-r from-[#D4AF37]/25 to-[#8C6D23]/30 hover:from-[#D4AF37]/35 hover:to-[#8C6D23]/40 border border-[#D4AF37]/60 text-[#FFE082] text-xs font-mono transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-103"
+              className="btn-touch px-2.5 py-1 rounded-xl btn-game-gold text-slate-950 text-xs font-mono transition-all flex items-center gap-1.5 shadow-md"
               title="Koleksi Lencana & Penilaian"
             >
-              <Award className="w-3.5 h-3.5 text-[#FFE082]" />
+              <Award className="w-3.5 h-3.5" />
               <span className="hidden sm:inline font-bold">Lencana</span>
             </button>
           )}
@@ -147,17 +147,17 @@ export const StageStepperNav: React.FC<StageStepperNavProps> = ({
               soundFX.playChime('gold');
               onSelectStage('WORLD_MAP');
             }}
-            className="p-1.5 sm:px-2.5 sm:py-1 rounded-lg bg-[#0B2544] hover:bg-[#123661] border border-cyan-400/50 text-cyan-200 text-xs font-mono transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:scale-103"
+            className="btn-touch px-2.5 py-1 rounded-xl btn-game-cyan text-slate-950 text-xs font-mono transition-all flex items-center gap-1.5 shadow-md"
             title="Buka Peta Dunia 5 Zona"
           >
-            <Compass className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="hidden sm:inline">Peta</span>
+            <Compass className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline font-bold">Peta</span>
           </button>
 
           {/* Sound Mute Toggle */}
           <button
             onClick={toggleMute}
-            className="p-1.5 rounded-lg bg-[#0B2544] hover:bg-[#123661] text-slate-300 hover:text-[#FFE082] border border-white/10 transition-colors cursor-pointer"
+            className="btn-touch p-1.5 rounded-xl btn-game-dark text-slate-200 hover:text-[#FFE082] transition-colors"
             title={isMuted ? 'Nyalakan Audio' : 'Senyapkan Audio'}
           >
             {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-[#FFE082]" />}
@@ -166,7 +166,7 @@ export const StageStepperNav: React.FC<StageStepperNavProps> = ({
           {/* Mobile Menu Dropdown Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-1.5 rounded-lg bg-[#0B2544] hover:bg-[#123661] text-slate-300 hover:text-white border border-white/10 cursor-pointer"
+            className="lg:hidden btn-touch p-1.5 rounded-xl btn-game-dark text-slate-200 hover:text-white"
             title="Daftar Tahap"
           >
             {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}

@@ -57,48 +57,37 @@ export default function App() {
   };
 
   return (
-    <div className="relative w-screen h-screen bg-[#050B14] text-slate-100 overflow-hidden font-sans select-none">
-      {/* 1. ATMOSPHERIC TROPICAL FANTASY LIGHTING & AMBIENT AURORAS */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0B1E38]/30 via-transparent to-[#050B14]/90 pointer-events-none z-0" />
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="absolute top-1/3 right-10 w-80 h-80 bg-emerald-500/8 rounded-full blur-[100px] pointer-events-none z-0" />
+    <div className="game-screen-wrapper font-sans select-none">
+      {/* Letterbox Cosmic Atmosphere */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0B1E38]/30 via-transparent to-[#02050A]/95 pointer-events-none z-0" />
+      <div className="absolute top-1/4 left-1/5 w-96 h-96 bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="absolute bottom-1/4 right-1/5 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[150px] pointer-events-none z-0" />
 
-      {/* 2. CINEMATIC VIGNETTE OVERLAY */}
-      <div className="absolute inset-0 cinematic-vignette pointer-events-none z-30" />
+      {/* FIXED 16:9 GAME STAGE MASTER CONTAINER */}
+      <div id="game-stage" className="relative">
+        {/* 16:9 Ornate Game Frame Runic Corners */}
+        <div className="game-viewport-corner-tl" />
+        <div className="game-viewport-corner-tr" />
+        <div className="game-viewport-corner-bl" />
+        <div className="game-viewport-corner-br" />
 
-      {/* 3. ORNATE GAME HUD CORNER BRACKETS (ALL 4 CORNERS) */}
-      <div className="hud-corner-tl z-40 hidden sm:block" />
-      <div className="hud-corner-tr z-40 hidden sm:block" />
-      <div className="hud-corner-bl z-40 hidden sm:block" />
-      <div className="hud-corner-br z-40 hidden sm:block" />
+        {/* Global Top Nav Stepper */}
+        {currentStage !== 'OPENING' && (
+          <StageStepperNav
+            currentStage={currentStage}
+            onSelectStage={handleStageSelect}
+            highestReachedStageIndex={highestReachedStageIndex}
+            onOpenBadges={() => {
+              soundFX.playChime('victory');
+              setIsBadgesOpen(true);
+            }}
+          />
+        )}
 
-      {/* Global Top Nav Stepper */}
-      <StageStepperNav
-        currentStage={currentStage}
-        onSelectStage={handleStageSelect}
-        highestReachedStageIndex={highestReachedStageIndex}
-        onOpenBadges={() => {
-          soundFX.playChime('victory');
-          setIsBadgesOpen(true);
-        }}
-      />
-
-      {/* Persistent Floating Quick-Access to Art Bible & Pedagogy Specs */}
-      <button
-        onClick={() => {
-          soundFX.playChime('cyan');
-          setIsArtBibleOpen(true);
-        }}
-        className="fixed bottom-4 right-4 z-40 px-3.5 py-2 rounded-xl bg-[#091C33]/90 hover:bg-[#112E52] text-[#FFE082] hover:text-white border border-[#D4AF37]/60 backdrop-blur-md shadow-[0_4px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(212,175,55,0.3)] flex items-center gap-2 text-xs font-mono transition-all hover:scale-105 cursor-pointer"
-        title="Buka Art Bible & Panduan Kurikulum"
-      >
-        <BookOpen className="w-4 h-4 text-[#FFE082]" />
-        <span className="hidden sm:inline font-bold">Art Bible & Konsep</span>
-      </button>
-
-      {/* STAGE 1: OPENING HERO SCREEN */}
-      {currentStage === 'OPENING' && (
+        {/* Stage Content Container */}
+        <div className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
+          {/* STAGE 1: OPENING HERO SCREEN */}
+          {currentStage === 'OPENING' && (
         <div
           className="relative w-full h-full"
           onMouseMove={(e) => {
@@ -339,6 +328,21 @@ export default function App() {
           }}
         />
       )}
+        </div>
+
+        {/* Persistent Floating Quick-Access to Art Bible & Pedagogy Specs */}
+        <button
+          onClick={() => {
+            soundFX.playChime('cyan');
+            setIsArtBibleOpen(true);
+          }}
+          className="absolute bottom-2.5 right-3 z-40 px-3 py-1 rounded-xl btn-game-dark text-[#FFE082] text-[11px] font-mono flex items-center gap-1.5 shadow-lg border border-[#D4AF37]/50"
+          title="Buka Art Bible & Panduan Kurikulum"
+        >
+          <BookOpen className="w-3.5 h-3.5 text-[#FFE082]" />
+          <span className="hidden sm:inline font-bold">Art Bible</span>
+        </button>
+      </div>
 
       {/* Modals */}
       <PlayerProfileModal
